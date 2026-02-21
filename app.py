@@ -62,62 +62,85 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1. Sidebar collapse button — PURE CSS FIX ═══ */
+/* ═══ 1. Sidebar collapse button — ZERO OUT TEXT ═══ */
+/* Zero out the font size to kill raw text nodes like double_arrow_right */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {
-    color: transparent !important; /* Hides fallback text */
+    font-size: 0 !important; 
+    color: transparent !important;
+    position: relative !important;
 }
-/* Hide default Streamlit icons/text spans */
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="collapsedControl"] svg,
-[data-testid="stSidebarCollapseButton"] span,
-[data-testid="collapsedControl"] span {
+/* Hide any child elements like SVGs or Spans */
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] * {
     display: none !important;
-}
-/* Inject a hardcoded SVG background for the Close Arrow */
-[data-testid="stSidebarCollapseButton"] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 32px !important;
-}
-/* Inject a hardcoded SVG background for the Open Arrow */
-[data-testid="collapsedControl"] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 32px !important;
 }
 
-/* ═══ 2. Expander arrow — PURE CSS FIX ═══ */
-[data-testid="stExpanderToggleIcon"] {
-    color: transparent !important; /* Hides fallback text */
-    /* Inject our own SVG arrow */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E2E8F0'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 24px !important;
-    height: 24px !important;
-    transition: transform 0.2s ease !important;
-    display: inline-block !important;
+/* Draw Close arrow (points left) */
+[data-testid="stSidebarCollapseButton"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important; left: 50% !important;
+    width: 10px !important; height: 10px !important;
+    border-left: 2px solid var(--txt2) !important;
+    border-bottom: 2px solid var(--txt2) !important;
+    transform: translate(-30%, -50%) rotate(45deg) !important;
+    display: block !important;
+    visibility: visible !important;
 }
-/* Hide Streamlit's default SVG or text spans */
-[data-testid="stExpanderToggleIcon"] svg,
-[data-testid="stExpanderToggleIcon"] span {
+
+/* Draw Open arrow (points right) */
+[data-testid="collapsedControl"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important; left: 50% !important;
+    width: 10px !important; height: 10px !important;
+    border-right: 2px solid var(--txt2) !important;
+    border-bottom: 2px solid var(--txt2) !important;
+    transform: translate(-70%, -50%) rotate(-45deg) !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* ═══ 2. Expander arrow — ZERO OUT TEXT ═══ */
+/* Zero out the font size of the summary to hide raw text nodes like _arrow_right */
+[data-testid="stExpander"] summary {
+    font-size: 0 !important; 
+    color: transparent !important;
+    position: relative !important;
+    padding-right: 36px !important; 
+}
+/* Hide the default toggle icon container */
+[data-testid="stExpanderToggleIcon"] {
     display: none !important;
 }
-/* Ensure the label text is perfectly visible */
+/* Restore the label text size and color (e.g. "Edit Profile", "Day 1") */
 [data-testid="stExpander"] summary p {
-    color: var(--txt) !important;
     font-size: 0.95rem !important;
+    color: var(--txt) !important;
     font-weight: 600 !important;
+    display: block !important;
+    visibility: visible !important;
 }
-/* Rotate the arrow when the expander is opened */
-[data-testid="stExpander"] details[open] summary [data-testid="stExpanderToggleIcon"] {
-    transform: rotate(180deg) !important;
+/* Draw Expander arrow (points down) */
+[data-testid="stExpander"] summary::after {
+    content: '' !important;
+    position: absolute !important;
+    right: 18px !important;
+    top: 50% !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-right: 2px solid var(--green) !important;
+    border-bottom: 2px solid var(--green) !important;
+    transform: translateY(-50%) rotate(45deg) !important;
+    transition: transform 0.2s ease !important;
+    pointer-events: none !important;
+    display: block !important;
+    visibility: visible !important;
+}
+/* Rotate the Expander arrow when opened (points up) */
+[data-testid="stExpander"] details[open] summary::after {
+    transform: translateY(-50%) rotate(-135deg) !important;
 }
 
 /* ═══ 3. Base ═══ */
