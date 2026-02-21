@@ -41,8 +41,7 @@ init_db()
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-/* Load Inter + Material Icons — Material Icons fixes the _arrow_right expander bug */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Icons&family=Material+Icons+Round&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 /* ═══ 0. Colour tokens ═══ */
 :root {
@@ -61,33 +60,37 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1A. Sidebar collapse button — hide "keyboard_double_ar" text ═══
-   Strategy: zero out font-size on all children, restore for SVG only.
-   The text is a Material Icons ligature that renders as its name when font absent. */
+/* ═══ 1A. Sidebar collapse button ═══ */
 [data-testid="stSidebarCollapseButton"] { overflow: hidden !important; }
-[data-testid="stSidebarCollapseButton"] * {
-    font-size: 0 !important; color: transparent !important;
-}
-[data-testid="stSidebarCollapseButton"] svg {
-    width: 22px !important; height: 22px !important;
-    color: var(--txt2) !important; display: block !important;
-}
+[data-testid="stSidebarCollapseButton"] * { font-size: 0 !important; color: transparent !important; }
+[data-testid="stSidebarCollapseButton"] svg { width:22px!important; height:22px!important; color:var(--txt2)!important; display:block!important; }
 [data-testid="collapsedControl"] { overflow: hidden !important; }
-[data-testid="collapsedControl"] * {
-    font-size: 0 !important; color: transparent !important;
-}
-[data-testid="collapsedControl"] svg {
-    width: 22px !important; height: 22px !important;
-    color: var(--txt2) !important; display: block !important;
-}
+[data-testid="collapsedControl"] * { font-size: 0 !important; color: transparent !important; }
+[data-testid="collapsedControl"] svg { width:22px!important; height:22px!important; color:var(--txt2)!important; display:block!important; }
 
-/* ═══ 1B. Expander icon — targeted fix ═══
-   Only hide the specific icon element, never the label text container.
-   [data-testid="stExpanderToggleIcon"] is the icon span — kill only that. */
+/* ═══ 1B. Expander icon — COMPREHENSIVE FIX for _arrow_right bleed-through ═══ */
 [data-testid="stExpanderToggleIcon"] {
     display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    visibility: hidden !important;
+    font-size: 0 !important;
 }
-/* The label paragraph inside the expander header must always be visible */
+/* Kill SVG chevrons inside expander summary */
+[data-testid="stExpander"] summary svg,
+details[data-testid] summary svg {
+    display: none !important;
+}
+/* Kill any Material Icon span that bleeds the ligature name as text */
+[data-testid="stExpander"] summary span[class*="css"],
+[data-testid="stExpander"] summary > div > div:first-child {
+    font-size: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+}
+/* Always keep the label paragraph fully visible */
 [data-testid="stExpander"] summary p,
 [data-testid="stExpander"] .streamlit-expanderHeader p,
 [data-testid="stExpander"] [data-testid="stExpanderHeader"] p {
@@ -101,12 +104,8 @@ st.markdown("""
 
 /* ═══ 2. Base ═══ */
 html, body { background: var(--bg) !important; font-family: 'Inter', sans-serif !important; }
-.stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewBlockContainer"],
-[data-testid="block-container"],
-div.block-container,
-.main { background: var(--bg) !important; }
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"],
+[data-testid="block-container"], div.block-container, .main { background: var(--bg) !important; }
 
 /* ═══ 3. Typography ═══ */
 p, li, span, div, label, .stMarkdown p, .stMarkdown li {
@@ -115,178 +114,123 @@ p, li, span, div, label, .stMarkdown p, .stMarkdown li {
     line-height: 1.75  !important;
     color: var(--txt)  !important;
 }
-h1 { font-size: 1.9rem  !important; font-weight: 800 !important; color: var(--green) !important; letter-spacing: -0.5px !important; }
-h2 { font-size: 1.4rem  !important; font-weight: 700 !important; color: var(--green) !important; }
-h3 { font-size: 1.1rem  !important; font-weight: 700 !important; color: var(--txt)   !important; }
+h1 { font-size:1.9rem !important; font-weight:800 !important; color:var(--green) !important; letter-spacing:-0.5px !important; }
+h2 { font-size:1.4rem !important; font-weight:700 !important; color:var(--green) !important; }
+h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)   !important; }
 [data-testid="stMarkdownContainer"] h1,
-[data-testid="stMarkdownContainer"] h2 { color: var(--green) !important; }
-.stCaption, [data-testid="stCaptionContainer"] p {
-    font-size: 0.82rem !important; color: var(--txt3) !important;
-}
+[data-testid="stMarkdownContainer"] h2 { color:var(--green) !important; }
+.stCaption, [data-testid="stCaptionContainer"] p { font-size:0.82rem !important; color:var(--txt3) !important; }
 
 /* ═══ 4. Sidebar ═══ */
-[data-testid="stSidebar"],
-[data-testid="stSidebar"] > div,
-[data-testid="stSidebarContent"] {
+[data-testid="stSidebar"], [data-testid="stSidebar"] > div, [data-testid="stSidebarContent"] {
     background: var(--bg2) !important;
     border-right: 1px solid var(--border) !important;
 }
-[data-testid="stSidebar"] * { color: var(--txt) !important; font-family: 'Inter', sans-serif !important; }
-[data-testid="stSidebar"] h2 { color: var(--green) !important; font-size: 1.1rem !important; font-weight: 700 !important; }
-[data-testid="stSidebar"] .stCaption p { color: var(--txt3) !important; font-size: 0.78rem !important; }
-[data-testid="stSidebar"] hr { border-color: var(--border) !important; margin: 12px 0 !important; }
+[data-testid="stSidebar"] * { color:var(--txt) !important; font-family:'Inter',sans-serif !important; }
+[data-testid="stSidebar"] h2 { color:var(--green) !important; font-size:1.1rem !important; font-weight:700 !important; }
+[data-testid="stSidebar"] .stCaption p { color:var(--txt3) !important; font-size:0.78rem !important; }
+[data-testid="stSidebar"] hr { border-color:var(--border) !important; margin:12px 0 !important; }
 
 /* ═══ 5. Buttons ═══ */
-/* Primary */
 .stButton > button[kind="primary"] {
-    background: var(--green)    !important;
-    color: #0a1a0f              !important;
-    border: none                !important;
-    border-radius: 10px         !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.95rem          !important;
-    font-weight: 700            !important;
-    padding: 0.6rem 1.8rem      !important;
-    min-height: 44px            !important;
-    width: auto                 !important;   /* NOT full-width by default */
-    letter-spacing: 0.01em      !important;
-    box-shadow: 0 0 0 0 rgba(34,197,94,0) !important;
-    transition: all 0.18s ease  !important;
+    background:var(--green) !important; color:#0a1a0f !important; border:none !important;
+    border-radius:10px !important; font-family:'Inter',sans-serif !important;
+    font-size:0.95rem !important; font-weight:700 !important;
+    padding:0.6rem 1.8rem !important; min-height:44px !important;
+    width:auto !important; letter-spacing:0.01em !important; transition:all 0.18s ease !important;
 }
 .stButton > button[kind="primary"]:hover {
-    background: var(--green-hi) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 16px rgba(34,197,94,0.35) !important;
+    background:var(--green-hi) !important; transform:translateY(-1px) !important;
+    box-shadow:0 4px 16px rgba(34,197,94,0.35) !important;
 }
-/* Full-width override when inside a container that needs it */
-.btn-full .stButton > button[kind="primary"] { width: 100% !important; }
-
-/* Secondary */
 .stButton > button {
-    background: var(--bg3)           !important;
-    color: var(--green)              !important;
-    border: 1px solid var(--border)  !important;
-    border-radius: 10px              !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.9rem                !important;
-    font-weight: 600                 !important;
-    min-height: 40px                 !important;
-    padding: 0.5rem 1.2rem           !important;
-    transition: all 0.15s ease       !important;
+    background:var(--bg3) !important; color:var(--green) !important;
+    border:1px solid var(--border) !important; border-radius:10px !important;
+    font-family:'Inter',sans-serif !important; font-size:0.9rem !important;
+    font-weight:600 !important; min-height:40px !important;
+    padding:0.5rem 1.2rem !important; transition:all 0.15s ease !important;
 }
-.stButton > button:hover {
-    background: #1E2D1E  !important;
-    border-color: var(--green) !important;
-}
+.stButton > button:hover { background:#1E2D1E !important; border-color:var(--green) !important; }
 
 /* ═══ 6. Inputs ═══ */
-.stTextInput > div > div > input,
-.stNumberInput > div > div > input,
-.stTextArea textarea,
-[data-baseweb="input"] input,
-[data-baseweb="textarea"] textarea {
-    background: var(--bg3)           !important;
-    color: var(--txt)                !important;
-    border: 1px solid var(--border)  !important;
-    border-radius: 8px               !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.95rem               !important;
-    padding: 0.55rem 0.9rem          !important;
-    min-height: 44px                 !important;
+.stTextInput > div > div > input, .stNumberInput > div > div > input,
+.stTextArea textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textarea {
+    background:var(--bg3) !important; color:var(--txt) !important;
+    border:1px solid var(--border) !important; border-radius:8px !important;
+    font-family:'Inter',sans-serif !important; font-size:0.95rem !important;
+    padding:0.55rem 0.9rem !important; min-height:44px !important;
 }
-.stTextInput > div > div > input:focus,
-.stTextArea textarea:focus {
-    border-color: var(--green)                 !important;
-    box-shadow: 0 0 0 2px rgba(34,197,94,0.18) !important;
+.stTextInput > div > div > input:focus, .stTextArea textarea:focus {
+    border-color:var(--green) !important; box-shadow:0 0 0 2px rgba(34,197,94,0.18) !important;
 }
-[data-baseweb="input"] { background: var(--bg3) !important; }
-
-/* Labels */
-.stTextInput label, .stNumberInput label, .stTextArea label,
-.stSelectbox label, .stDateInput label, .stTimeInput label,
-.stRadio label > div > p, .stMultiSelect label,
-[data-testid="stFormLabel"] p {
-    color: var(--txt2)  !important;
-    font-size: 0.83rem  !important;
-    font-weight: 600    !important;
-    letter-spacing: 0.04em !important;
-    text-transform: uppercase !important;
+[data-baseweb="input"] { background:var(--bg3) !important; }
+.stTextInput label, .stNumberInput label, .stTextArea label, .stSelectbox label,
+.stDateInput label, .stTimeInput label, .stRadio label > div > p,
+.stMultiSelect label, [data-testid="stFormLabel"] p {
+    color:var(--txt2) !important; font-size:0.83rem !important; font-weight:600 !important;
+    letter-spacing:0.04em !important; text-transform:uppercase !important;
 }
 
 /* ═══ 7. Selectbox ═══ */
 [data-baseweb="select"] > div {
-    background: var(--bg3)           !important;
-    color: var(--txt)                !important;
-    border: 1px solid var(--border)  !important;
-    border-radius: 8px               !important;
+    background:var(--bg3) !important; color:var(--txt) !important;
+    border:1px solid var(--border) !important; border-radius:8px !important;
 }
-[data-baseweb="select"] span, [data-baseweb="select"] div { color: var(--txt) !important; }
+[data-baseweb="select"] span, [data-baseweb="select"] div { color:var(--txt) !important; }
 [data-baseweb="popover"] [role="listbox"], [data-baseweb="menu"] {
-    background: var(--bg3) !important; border: 1px solid var(--border) !important; border-radius: 8px !important;
+    background:var(--bg3) !important; border:1px solid var(--border) !important; border-radius:8px !important;
 }
-[data-baseweb="menu"] li { color: var(--txt) !important; font-size: 0.95rem !important; }
-[data-baseweb="menu"] li:hover { background: #1E2D1E !important; }
+[data-baseweb="menu"] li { color:var(--txt) !important; font-size:0.95rem !important; }
+[data-baseweb="menu"] li:hover { background:#1E2D1E !important; }
 
 /* ═══ 8. Checkboxes / Radio / Toggle ═══ */
-.stCheckbox label, .stCheckbox span,
-[data-testid="stCheckbox"] label { color: var(--txt) !important; font-size: 0.95rem !important; font-weight: 400 !important; text-transform: none !important; }
-.stRadio label, .stRadio div[role="radiogroup"] label { color: var(--txt) !important; font-size: 0.95rem !important; }
-.stToggle label p { color: var(--txt) !important; font-size: 0.95rem !important; }
+.stCheckbox label, .stCheckbox span, [data-testid="stCheckbox"] label {
+    color:var(--txt) !important; font-size:0.95rem !important;
+    font-weight:400 !important; text-transform:none !important;
+}
+.stRadio label, .stRadio div[role="radiogroup"] label { color:var(--txt) !important; font-size:0.95rem !important; }
+.stToggle label p { color:var(--txt) !important; font-size:0.95rem !important; }
 
 /* ═══ 9. Date / Time ═══ */
 input[type="date"], input[type="time"] {
-    background: var(--bg3) !important; color: var(--txt) !important;
-    border: 1px solid var(--border) !important; border-radius: 8px !important;
+    background:var(--bg3) !important; color:var(--txt) !important;
+    border:1px solid var(--border) !important; border-radius:8px !important;
 }
 
 /* ═══ 10. Tabs ═══ */
 .stTabs [data-baseweb="tab-list"] {
-    background: var(--bg2) !important;
-    border-bottom: 1px solid var(--border) !important;
-    gap: 2px !important;
+    background:var(--bg2) !important; border-bottom:1px solid var(--border) !important; gap:2px !important;
 }
 .stTabs [data-baseweb="tab"] {
-    background: transparent !important;
-    color: var(--txt3) !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.88rem !important;
-    font-weight: 600 !important;
-    padding: 12px 18px !important;
-    border-bottom: 2px solid transparent !important;
-    min-height: 46px !important;
+    background:transparent !important; color:var(--txt3) !important;
+    font-family:'Inter',sans-serif !important; font-size:0.88rem !important;
+    font-weight:600 !important; padding:12px 18px !important;
+    border-bottom:2px solid transparent !important; min-height:46px !important;
 }
 .stTabs [aria-selected="true"] {
-    color: var(--green) !important;
-    border-bottom: 2px solid var(--green) !important;
-    font-weight: 700 !important;
+    color:var(--green) !important; border-bottom:2px solid var(--green) !important; font-weight:700 !important;
 }
-.stTabs [data-baseweb="tab-panel"] { background: var(--bg) !important; padding-top: 20px !important; }
+.stTabs [data-baseweb="tab-panel"] { background:var(--bg) !important; padding-top:20px !important; }
 
-/* ═══ 11. Expanders (styling — icon bug fix is in section 1B above) ═══ */
+/* ═══ 11. Expanders ═══ */
 [data-testid="stExpander"] {
-    background: var(--bg2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 10px !important;
-    overflow: hidden !important;
+    background:var(--bg2) !important; border:1px solid var(--border) !important;
+    border-radius:10px !important; overflow:hidden !important;
 }
-[data-testid="stExpander"] summary p,
-.streamlit-expanderHeader p {
-    color: var(--txt) !important;
-    font-weight: 600 !important;
-    font-size: 0.93rem !important;
-    margin: 0 !important;
+[data-testid="stExpander"] summary p, .streamlit-expanderHeader p {
+    color:var(--txt) !important; font-weight:600 !important; font-size:0.93rem !important; margin:0 !important;
 }
-[data-testid="stExpander"] summary:hover { background: #1a2030 !important; }
-[data-testid="stExpander"] > div > div { background: var(--bg2) !important; padding: 12px 16px !important; }
+[data-testid="stExpander"] summary:hover { background:#1a2030 !important; }
+[data-testid="stExpander"] > div > div { background:var(--bg2) !important; padding:12px 16px !important; }
 
 /* ═══ 12. Metrics ═══ */
 [data-testid="stMetric"] {
-    background: var(--bg2) !important; border: 1px solid var(--border) !important;
-    border-radius: 12px !important; padding: 14px 18px !important;
+    background:var(--bg2) !important; border:1px solid var(--border) !important;
+    border-radius:12px !important; padding:14px 18px !important;
 }
-[data-testid="stMetricValue"] { font-size: 1.8rem !important; font-weight: 800 !important; color: var(--green) !important; }
-[data-testid="stMetricLabel"] { color: var(--txt2) !important; font-size: 0.8rem !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; }
-[data-testid="stMetricDelta"]  { color: var(--txt3) !important; }
+[data-testid="stMetricValue"] { font-size:1.8rem !important; font-weight:800 !important; color:var(--green) !important; }
+[data-testid="stMetricLabel"] { color:var(--txt2) !important; font-size:0.8rem !important; font-weight:600 !important; text-transform:uppercase !important; letter-spacing:0.05em !important; }
+[data-testid="stMetricDelta"]  { color:var(--txt3) !important; }
 
 /* ═══ 13. Alerts ═══ */
 div[data-testid="stSuccess"] { background:#052e16 !important; border-left:4px solid var(--green) !important; border-radius:8px !important; }
@@ -299,41 +243,73 @@ div[data-testid="stError"]   { background:#1a0505 !important; border-left:4px so
 div[data-testid="stError"]   * { color:#FCA5A5 !important; }
 
 /* ═══ 14. Misc ═══ */
-hr { border-color: var(--border) !important; margin: 16px 0 !important; }
+hr { border-color:var(--border) !important; margin:16px 0 !important; }
 [data-testid="stDataFrame"], [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
-    background: var(--bg2) !important; color: var(--txt) !important;
+    background:var(--bg2) !important; color:var(--txt) !important;
 }
-[data-baseweb="tag"] { background: #1a2e1a !important; color: var(--green-hi) !important; }
-.stNumberInput button { background: var(--bg3) !important; color: var(--green) !important; border-color: var(--border) !important; }
-[data-testid="stSpinner"] p { color: var(--green) !important; }
+[data-baseweb="tag"] { background:#1a2e1a !important; color:var(--green-hi) !important; }
+.stNumberInput button { background:var(--bg3) !important; color:var(--green) !important; border-color:var(--border) !important; }
+[data-testid="stSpinner"] p { color:var(--green) !important; }
 
 /* ════════════════════════════════════════
    CUSTOM COMPONENTS
    ════════════════════════════════════════ */
 
+/* ── BIG Login Hero ── */
+.login-hero {
+    text-align: center;
+    padding: 48px 20px 32px;
+    margin-bottom: 4px;
+}
+.login-hero-logo {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 4.2rem !important;
+    font-weight: 900 !important;
+    color: var(--green) !important;
+    letter-spacing: -2px !important;
+    line-height: 1.05 !important;
+    display: block !important;
+    text-shadow: 0 0 40px rgba(34,197,94,0.25);
+}
+.login-hero-urdu {
+    font-size: 2.1rem !important;
+    color: var(--green-hi) !important;
+    font-weight: 700 !important;
+    display: block !important;
+    margin-top: 4px !important;
+    letter-spacing: 0 !important;
+}
+.login-hero-sub {
+    font-size: 1.08rem !important;
+    color: var(--txt2) !important;
+    margin-top: 12px !important;
+    display: block !important;
+    font-weight: 400 !important;
+}
+
 /* ── Tip banner ── */
 .tip-banner {
-    background: linear-gradient(135deg, #052e16, #0f3d1c);
-    border: 1px solid #16A34A; border-radius: 14px;
-    padding: 18px 22px; margin-bottom: 20px;
-    font-size: 0.96rem; line-height: 1.75;
-    box-shadow: 0 2px 12px rgba(34,197,94,0.12);
+    background: linear-gradient(135deg,#052e16,#0f3d1c);
+    border:1px solid #16A34A; border-radius:14px;
+    padding:18px 22px; margin-bottom:20px;
+    font-size:0.96rem; line-height:1.75;
+    box-shadow:0 2px 12px rgba(34,197,94,0.12);
 }
-.tip-banner * { color: #D1FAE5 !important; }
+.tip-banner * { color:#D1FAE5 !important; }
 .tip-label {
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--green-hi) !important;
-    margin-bottom: 6px; display: block;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--green-hi) !important;
+    margin-bottom:6px; display:block;
 }
 
 /* ── Profile card ── */
 .profile-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-left: 4px solid var(--green); border-radius: 12px;
-    padding: 16px 22px; margin-bottom: 18px;
+    background:var(--bg2); border:1px solid var(--border);
+    border-left:4px solid var(--green); border-radius:12px;
+    padding:16px 22px; margin-bottom:18px;
 }
-.profile-name { font-size: 1.1rem; font-weight: 700; color: #F0FFF4 !important; }
-.profile-detail { font-size: 0.88rem; color: var(--txt2) !important; margin-top: 4px; }
+.profile-name { font-size:1.1rem; font-weight:700; color:#F0FFF4 !important; }
+.profile-detail { font-size:0.88rem; color:var(--txt2) !important; margin-top:4px; }
 
 /* ── Badges ── */
 .badge-g { background:#052e16; color:#4ADE80 !important; border:1px solid #16A34A; border-radius:6px; padding:3px 12px; font-weight:700; font-size:0.82rem; display:inline-block; }
@@ -343,76 +319,76 @@ hr { border-color: var(--border) !important; margin: 16px 0 !important; }
 
 /* ── Chat bubbles ── */
 .bubble-user {
-    background: #1a2e1a; border: 1px solid #16A34A; border-radius: 16px 16px 4px 16px;
-    padding: 14px 18px; margin: 8px 0; margin-left: 10%;
-    font-size: 0.96rem; line-height: 1.75; color: #D1FAE5 !important;
+    background:#1a2e1a; border:1px solid #16A34A; border-radius:16px 16px 4px 16px;
+    padding:14px 18px; margin:8px 0; margin-left:10%;
+    font-size:0.96rem; line-height:1.75; color:#D1FAE5 !important;
 }
 .bubble-bot {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px;
-    padding: 14px 18px; margin: 8px 0; margin-right: 10%;
-    font-size: 0.96rem; line-height: 1.75; color: var(--txt) !important;
+    background:var(--bg2); border:1px solid var(--border); border-radius:16px 16px 16px 4px;
+    padding:14px 18px; margin:8px 0; margin-right:10%;
+    font-size:0.96rem; line-height:1.75; color:var(--txt) !important;
 }
-.bubble-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--txt3) !important; margin-bottom: 4px; }
+.bubble-label { font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--txt3) !important; margin-bottom:4px; }
 
 /* ── Wizard box ── */
 .wizard-box {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-top: 4px solid var(--green); border-radius: 16px;
-    padding: 28px 32px; margin: 0 auto; max-width: 580px;
+    background:var(--bg2); border:1px solid var(--border);
+    border-top:4px solid var(--green); border-radius:16px;
+    padding:28px 32px; margin:0 auto; max-width:580px;
 }
-.wizard-box h2 { color: var(--green) !important; margin-bottom: 6px; }
-.wizard-box p  { color: var(--txt2) !important; margin-bottom: 0; }
+.wizard-box h2 { color:var(--green) !important; margin-bottom:6px; }
+.wizard-box p  { color:var(--txt2) !important; margin-bottom:0; }
 .step-pill {
-    background: #052e16; color: var(--green-hi) !important;
-    border: 1px solid #16A34A; border-radius: 20px;
-    padding: 4px 14px; font-size: 0.75rem; font-weight: 700;
-    display: inline-block; margin-bottom: 14px; letter-spacing: 0.04em;
+    background:#052e16; color:var(--green-hi) !important;
+    border:1px solid #16A34A; border-radius:20px;
+    padding:4px 14px; font-size:0.75rem; font-weight:700;
+    display:inline-block; margin-bottom:14px; letter-spacing:0.04em;
 }
 
-/* ── Entry feature card ── */
+/* ── Feature card ── */
 .feature-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
-    padding: 24px 26px; height: 100%;
+    background:var(--bg2); border:1px solid var(--border); border-radius:14px;
+    padding:24px 26px; height:100%;
 }
-.feature-card p { color: var(--txt) !important; font-size: 0.96rem !important; margin: 8px 0 !important; }
-.feature-card .disc { color: var(--txt3) !important; font-size: 0.83rem !important; }
+.feature-card p { color:var(--txt) !important; font-size:0.96rem !important; margin:8px 0 !important; }
+.feature-card .disc { color:var(--txt3) !important; font-size:0.83rem !important; }
 
 /* ── Sidebar disclaimer ── */
 .sb-disc {
-    background: #110e00; border: 1px solid #3a2800;
-    border-left: 3px solid var(--amber);
-    border-radius: 8px; padding: 12px 14px; margin-top: 2px;
+    background:#110e00; border:1px solid #3a2800;
+    border-left:3px solid var(--amber);
+    border-radius:8px; padding:12px 14px; margin-top:2px;
 }
-.sb-disc p { color: var(--txt2) !important; font-size: 0.78rem !important; line-height: 1.65 !important; margin: 2px 0 !important; text-transform: none !important; letter-spacing: 0 !important; }
-.sb-disc strong { color: #FCD34D !important; }
-.sb-disc-title { font-size: 0.82rem !important; font-weight: 700 !important; color: var(--amber) !important; margin-bottom: 6px !important; }
+.sb-disc p { color:var(--txt2) !important; font-size:0.78rem !important; line-height:1.65 !important; margin:2px 0 !important; text-transform:none !important; letter-spacing:0 !important; }
+.sb-disc strong { color:#FCD34D !important; }
+.sb-disc-title { font-size:0.82rem !important; font-weight:700 !important; color:var(--amber) !important; margin-bottom:6px !important; }
 
-/* ── Meal slot label ── */
-.meal-slot { font-size: 0.82rem; font-weight: 700; color: var(--green) !important; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
-
-/* ── Section divider label ── */
+/* ── Meal slot / section labels ── */
+.meal-slot { font-size:0.82rem; font-weight:700; color:var(--green) !important; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:2px; }
 .section-label {
-    font-size: 0.72rem; font-weight: 700; color: var(--txt3) !important;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-bottom: 14px;
+    font-size:0.72rem; font-weight:700; color:var(--txt3) !important;
+    text-transform:uppercase; letter-spacing:0.1em;
+    border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:14px;
 }
 
 /* ── Footer ── */
-.footer { font-size: 0.78rem; color: var(--txt3) !important; text-align: center; padding: 12px 0; border-top: 1px solid var(--border); margin-top: 32px; }
+.footer { font-size:0.78rem; color:var(--txt3) !important; text-align:center; padding:12px 0; border-top:1px solid var(--border); margin-top:32px; }
 </style>
 
 <script>
 (function(){
-    function fixIcons() {
-        /* Only hide elements with the specific icon testid — never touch label text */
-        document.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(el => {
-            el.style.cssText = 'display:none!important';
+    function fixIcons(){
+        /* Aggressively hide expander toggle icons and any bleeding ligature text */
+        document.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(el=>{
+            el.style.cssText='display:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;visibility:hidden!important;font-size:0!important;';
         });
-        /* Sidebar collapse button: strip text nodes, keep SVG */
-        document.querySelectorAll(
-            '[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]'
-        ).forEach(el => {
-            el.childNodes.forEach(n => { if(n.nodeType===3) n.textContent=''; });
+        /* Also hide SVG arrows inside expander summaries */
+        document.querySelectorAll('[data-testid="stExpander"] summary svg').forEach(el=>{
+            el.style.cssText='display:none!important;';
+        });
+        /* Sidebar collapse: strip bare text nodes, keep SVG */
+        document.querySelectorAll('[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]').forEach(el=>{
+            el.childNodes.forEach(n=>{ if(n.nodeType===3) n.textContent=''; });
         });
     }
     fixIcons();
@@ -503,7 +479,6 @@ def _sidebar():
     with st.sidebar:
         _lang_toggle("sb")
         st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
-
         st.markdown(f"## 🩺 {t('app_title')}")
         st.caption(t("app_subtitle"))
 
@@ -515,6 +490,8 @@ def _sidebar():
                 cls = {"GREEN":"badge-g","AMBER":"badge-a","RED":"badge-r"}.get(lv,"badge-n")
                 lbl = {"GREEN":t("status_green"),"AMBER":t("status_amber"),"RED":t("status_red")}.get(lv,"")
                 st.markdown(f'<span class="{cls}">{lbl}</span>', unsafe_allow_html=True)
+            else:
+                st.markdown('<span class="badge-n">⬤ Not assessed</span>', unsafe_allow_html=True)
             st.divider()
             if st.button(t("logout_btn"), use_container_width=True):
                 ss["_confirm_logout"] = True
@@ -525,8 +502,6 @@ def _sidebar():
                 if c2.button(t("no"),  key="ln"): ss["_confirm_logout"] = False; st.rerun()
 
         st.divider()
-
-        # Plain disclaimer — avoids the Streamlit expander icon-name bug entirely
         lang = _lang()
         if lang == "en":
             st.markdown("""
@@ -549,7 +524,6 @@ def _sidebar():
 <p>• شوگر <strong>180 mg/dL</strong> سے بار بار اوپر؟ ڈاکٹر سے ملیں</p>
 <p>• ہنگامی صورت میں ایمرجنسی کو کال کریں</p>
 </div>""", unsafe_allow_html=True)
-
         st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
         st.caption(t("version"))
 
@@ -560,19 +534,27 @@ _sidebar()
 #  ENTRY SCREEN
 # ══════════════════════════════════════════════════════════════════════════════
 if "user_key" not in ss:
-    # Header row
+    # Language toggle top-right
     h1, h2 = st.columns([5, 1])
     with h2: _lang_toggle("entry")
 
-    st.markdown(f"# 🩺 {t('app_title')}")
-    st.markdown(f"<p style='font-size:1.15rem;color:#94A3B8;margin:-6px 0 20px;'>{t('entry_heading')}</p>", unsafe_allow_html=True)
+    # ── BIG HERO LOGO — always prominent ──
+    lang = _lang()
+    st.markdown(
+        f'<div class="login-hero">'
+        f'<span class="login-hero-logo">🩺 Apni Sehat</span>'
+        f'<span class="login-hero-urdu">اپنی صحت</span>'
+        f'<span class="login-hero-sub">{"Your personal diabetes health companion" if lang=="en" else "آپ کا ذاتی ذیابیطس صحت ساتھی"}</span>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
     st.divider()
 
-    # Two-column layout: form left, feature card right
     left, right = st.columns([1, 1], gap="large")
 
     with left:
-        st.markdown('<div class="section-label">Your details</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="section-label">{"Your details" if lang=="en" else "آپ کی تفصیلات"}</div>', unsafe_allow_html=True)
         name  = st.text_input(t("entry_name"),  placeholder=t("entry_name_hint"), label_visibility="collapsed")
         st.markdown('<div style="height:4px"></div>', unsafe_allow_html=True)
         phone = st.text_input(t("entry_phone"), placeholder=t("entry_phone_ph"),  label_visibility="collapsed")
@@ -580,7 +562,6 @@ if "user_key" not in ss:
         st.caption(t("entry_privacy"))
         st.markdown('<div style="height:10px"></div>', unsafe_allow_html=True)
 
-        # Inline button — not full width
         go_col, _ = st.columns([1, 2])
         with go_col:
             go = st.button(t("entry_btn"), type="primary", use_container_width=True)
@@ -602,41 +583,50 @@ if "user_key" not in ss:
 
                 if prof and prof.get("age"):
                     ss.update({
-                        "name":ss.get("display_name"), "age":prof.get("age",30),
-                        "gender":prof.get("gender","Prefer not to say"),
-                        "height_cm":prof.get("height_cm",0), "weight_kg":prof.get("weight_kg",0.0),
-                        "family_history":prof.get("family_history",[]),
-                        "diabetes_type":prof.get("diabetes_type","Type 2"),
-                        "has_hypertension":bool(prof.get("has_hypertension",0)),
-                        "has_high_cholesterol":bool(prof.get("has_high_cholesterol",0)),
-                        "phone_last4":prof.get("phone_last4",last4(pn)),
-                        "prefer_desi":True, "veg_only":False,
-                        "profile_complete":True, "setup_step":"done",
-                        "on_insulin":False, "hypo_episodes":False, "weakness_between":False,
+                        "name": prof.get("full_name") or name.strip(),
+                        "age": prof.get("age", 30),
+                        "gender": prof.get("gender", "Prefer not to say"),
+                        "height_cm": prof.get("height_cm", 0),
+                        "weight_kg": prof.get("weight_kg", 0.0),
+                        "family_history": prof.get("family_history", []),
+                        "diabetes_type": prof.get("diabetes_type", "Type 2"),
+                        "has_hypertension": bool(prof.get("has_hypertension", 0)),
+                        "has_high_cholesterol": bool(prof.get("has_high_cholesterol", 0)),
+                        "phone_last4": prof.get("phone_last4", last4(pn)),
+                        "prefer_desi": True, "veg_only": False,
+                        "profile_complete": True, "setup_step": "done",
+                        "on_insulin": False, "hypo_episodes": False, "weakness_between": False,
                     })
-                    ss["name"] = prof.get("full_name") or name.strip()
-                    # ── FIX: use `or 0` so NULL from DB becomes 0, not None ──
+
+                    # FIX 1: safe BMI — `or 0` converts NULL from DB to 0
                     h = prof.get("height_cm") or 0
                     w = prof.get("weight_kg") or 0
                     if h > 0 and w > 0:
                         ss["bmi"] = w / ((h / 100) ** 2)
+
+                    # FIX 2: run triage for returning users → sidebar badge will show
+                    _run_triage(
+                        ss.get("diabetes_type", "Type 2"),
+                        ss.get("has_hypertension", False),
+                        ss.get("has_high_cholesterol", False),
+                    )
+
                     st.success(f"{t('welcome_back')}, {ss['name']}! 👋")
                 else:
-                    upsert_profile(uk, {"full_name":name.strip(),"phone_last4":last4(pn),"family_history":[]})
-                    ss.update({"name":name.strip(),"profile_complete":False,"setup_step":1,
-                               "prefer_desi":True,"veg_only":False})
+                    upsert_profile(uk, {"full_name": name.strip(), "phone_last4": last4(pn), "family_history": []})
+                    ss.update({"name": name.strip(), "profile_complete": False, "setup_step": 1,
+                               "prefer_desi": True, "veg_only": False})
                     st.info(t("new_user_found"))
             st.rerun()
 
     with right:
-        lang = _lang()
         feats = [
-            ("✅","Bilingual health chatbot — English & Urdu" if lang=="en" else "اردو اور انگریزی میں صحت کا مددگار"),
-            ("🥗","Personalised 7-day desi meal plan"         if lang=="en" else "ذاتی 7 دن کا دیسی کھانے کا منصوبہ"),
-            ("📊","Blood sugar tracker with trend chart"       if lang=="en" else "بلڈ شوگر ٹریکر"),
-            ("💡","AI food swap suggestions"                   if lang=="en" else "AI سے کھانے کی تجاویز"),
+            ("✅", "Bilingual health chatbot — English & Urdu" if lang=="en" else "اردو اور انگریزی میں صحت کا مددگار"),
+            ("🥗", "Personalised 7-day desi meal plan"         if lang=="en" else "ذاتی 7 دن کا دیسی کھانے کا منصوبہ"),
+            ("📊", "Blood sugar tracker with trend chart"       if lang=="en" else "بلڈ شوگر ٹریکر"),
+            ("💡", "AI food swap suggestions"                   if lang=="en" else "AI سے کھانے کی تجاویز"),
         ]
-        rows = "".join(f'<p><span style="margin-right:10px;">{i}</span>{t}</p>' for i,t in feats)
+        rows = "".join(f'<p><span style="margin-right:10px;">{i}</span>{txt}</p>' for i, txt in feats)
         disc = ("This app supports healthy habits — it does <strong>not</strong> replace your doctor."
                 if lang=="en" else
                 "یہ ایپ صحت مند عادات میں مدد کرتی ہے — آپ کے <strong>ڈاکٹر کی جگہ نہیں لیتی</strong>۔")
@@ -691,9 +681,9 @@ if ss.get("setup_step") in (1, 2):
                                "prefer_desi":pref,"veg_only":veg,"setup_step":2})
                     st.rerun()
         else:
-            hy     = st.checkbox(t("wizard_hypert"), value=ss.get("has_hypertension",False))
-            ch     = st.checkbox(t("wizard_chol"),   value=ss.get("has_high_cholesterol",False))
-            other  = st.checkbox(t("wizard_other"))
+            hy    = st.checkbox(t("wizard_hypert"), value=ss.get("has_hypertension",False))
+            ch    = st.checkbox(t("wizard_chol"),   value=ss.get("has_high_cholesterol",False))
+            other = st.checkbox(t("wizard_other"))
             st.divider()
             st.markdown(f"**{'Meal frequency questions' if _lang()=='en' else 'کھانے کی تعداد کے سوالات'}**")
             ins  = st.checkbox(t("q_insulin"),  value=ss.get("on_insulin",False),       help=t("q_insulin_help"))
@@ -758,16 +748,15 @@ tabs = st.tabs([t("tab_plan"), t("tab_chat"), t("tab_glucose"), t("tab_dashboard
 # ══════════════════════════════════════════════════════════════════════════════
 with tabs[0]:
 
-    # Profile card
-    lv        = _triage_level()
-    bcls      = {"GREEN":"badge-g","AMBER":"badge-a","RED":"badge-r"}.get(lv or "","badge-n")
-    blbl      = {"GREEN":t("status_green"),"AMBER":t("status_amber"),"RED":t("status_red")}.get(lv or "",t("status_none"))
-    conds     = ([("Hypertension"  if _lang()=="en" else "ہائی بلڈ پریشر")] if ss.get("has_hypertension") else []) + \
-                ([("High Cholesterol" if _lang()=="en" else "زیادہ کولیسٹرول")] if ss.get("has_high_cholesterol") else [])
-    cond_str  = ", ".join(conds) if conds else t("no_conditions")
-    name_d    = ss.get("name", ss.get("display_name",""))
-    age_d     = ss.get("age","")
-    dtype_d   = ss.get("diabetes_type","")
+    lv       = _triage_level()
+    bcls     = {"GREEN":"badge-g","AMBER":"badge-a","RED":"badge-r"}.get(lv or "","badge-n")
+    blbl     = {"GREEN":t("status_green"),"AMBER":t("status_amber"),"RED":t("status_red")}.get(lv or "",t("status_none"))
+    conds    = ([("Hypertension" if _lang()=="en" else "ہائی بلڈ پریشر")] if ss.get("has_hypertension") else []) + \
+               ([("High Cholesterol" if _lang()=="en" else "زیادہ کولیسٹرول")] if ss.get("has_high_cholesterol") else [])
+    cond_str = ", ".join(conds) if conds else t("no_conditions")
+    name_d   = ss.get("name", ss.get("display_name",""))
+    age_d    = ss.get("age","")
+    dtype_d  = ss.get("diabetes_type","")
 
     pc1, pc2 = st.columns([5,1])
     with pc1:
@@ -787,15 +776,15 @@ with tabs[0]:
         with st.expander("Edit Profile" if _lang()=="en" else "پروفائل تبدیل کریں", expanded=True):
             ef1, ef2 = st.columns(2)
             with ef1:
-                en   = st.text_input(t("pf_name"), value=ss.get("name",""), key="e_name")
-                ea   = st.number_input(t("pf_age"), 1, 110, int(ss.get("age",50) or 50), key="e_age")
+                en  = st.text_input(t("pf_name"), value=ss.get("name",""), key="e_name")
+                ea  = st.number_input(t("pf_age"), 1, 110, int(ss.get("age",50) or 50), key="e_age")
             with ef2:
-                go   = t("pf_gender_opts"); ge = T["en"]["pf_gender_opts"]
-                gs   = ss.get("gender","Prefer not to say"); gi = ge.index(gs) if gs in ge else 0
-                egn  = st.selectbox(t("pf_gender"), go, index=gi, key="e_gender")
-                do   = t("pf_diabetes_opts"); de = T["en"]["pf_diabetes_opts"]
-                ds   = ss.get("diabetes_type","Type 2"); di = de.index(ds) if ds in de else 0
-                edt  = st.selectbox(t("pf_diabetes"), do, index=di, key="e_dtype")
+                go  = t("pf_gender_opts"); ge = T["en"]["pf_gender_opts"]
+                gs  = ss.get("gender","Prefer not to say"); gi = ge.index(gs) if gs in ge else 0
+                egn = st.selectbox(t("pf_gender"), go, index=gi, key="e_gender")
+                do  = t("pf_diabetes_opts"); de = T["en"]["pf_diabetes_opts"]
+                ds  = ss.get("diabetes_type","Type 2"); di = de.index(ds) if ds in de else 0
+                edt = st.selectbox(t("pf_diabetes"), do, index=di, key="e_dtype")
 
             ef3, ef4 = st.columns(2)
             with ef3: eh = st.number_input(t("pf_height"), 0, 250, int(ss.get("height_cm",0) or 0), key="e_h")
@@ -806,16 +795,16 @@ with tabs[0]:
 
             efam = st.multiselect(t("pf_family"), T["en"]["pf_family_opts"], default=ss.get("family_history",[]), key="e_fam")
             ec1, ec2, ec3 = st.columns(3)
-            with ec1: ehy = st.checkbox(t("pf_hypert"), value=ss.get("has_hypertension",False),  key="e_hy")
+            with ec1: ehy = st.checkbox(t("pf_hypert"), value=ss.get("has_hypertension",False),    key="e_hy")
             with ec2: ech = st.checkbox(t("pf_chol"),   value=ss.get("has_high_cholesterol",False), key="e_ch")
             with ec3: eot = st.checkbox(t("pf_other"),  key="e_ot")
 
             st.divider()
             st.markdown(f"**{'Meal frequency' if _lang()=='en' else 'کھانے کی تعداد'}**")
             ef_1, ef_2, ef_3 = st.columns(3)
-            with ef_1: eins = st.checkbox(t("q_insulin"),  value=ss.get("on_insulin",False),      key="e_ins",help=t("q_insulin_help"))
-            with ef_2: ehyp = st.checkbox(t("q_hypo"),     value=ss.get("hypo_episodes",False),   key="e_hyp",help=t("q_hypo_help"))
-            with ef_3: ewkn = st.checkbox(t("q_weakness"), value=ss.get("weakness_between",False),key="e_wkn",help=t("q_weakness_help"))
+            with ef_1: eins = st.checkbox(t("q_insulin"),  value=ss.get("on_insulin",False),       key="e_ins",help=t("q_insulin_help"))
+            with ef_2: ehyp = st.checkbox(t("q_hypo"),     value=ss.get("hypo_episodes",False),    key="e_hyp",help=t("q_hypo_help"))
+            with ef_3: ewkn = st.checkbox(t("q_weakness"), value=ss.get("weakness_between",False), key="e_wkn",help=t("q_weakness_help"))
 
             with st.expander("Add recent test results (optional)" if _lang()=="en" else "حالیہ ٹیسٹ کے نتائج شامل کریں (اختیاری)"):
                 st.caption(t("pf_advanced_note"))
@@ -917,7 +906,9 @@ with tabs[0]:
         days  = _plan_days(); slots = _plan_slots(); lg = _lang()
         for day in days:
             day_carbs = sum(day[s]["carb_servings"]*CARB["carb_serving_grams"] for s in slots if s in day)
-            day_label = f"Day {day['day']}  ·  ~{day_carbs:.0f}g {t('carbs_label')}" if _lang()=="en" else f"دن {day['day']}  ·  ~{day_carbs:.0f}g {t('carbs_label')}"
+            day_label = (f"Day {day['day']}  ·  ~{day_carbs:.0f}g {t('carbs_label')}"
+                         if _lang()=="en" else
+                         f"دن {day['day']}  ·  ~{day_carbs:.0f}g {t('carbs_label')}")
             with st.expander(day_label):
                 for slot in slots:
                     if slot not in day: continue
