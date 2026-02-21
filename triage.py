@@ -8,6 +8,16 @@ from typing import List, Optional, Tuple
 from config import TRIAGE
 
 
+def _to_num(x):
+    """Safely convert to float, else return None."""
+    try:
+        if x is None or x == "":
+            return None
+        return float(x)
+    except (TypeError, ValueError):
+        return None
+
+
 def _mean(xs: List[float]) -> float:
     return sum(xs) / max(len(xs), 1)
 
@@ -15,7 +25,7 @@ def _mean(xs: List[float]) -> float:
 def _std(xs: List[float]) -> float:
     if len(xs) < 2:
         return 0.0
-    m   = _mean(xs)
+    m = _mean(xs)
     var = sum((x - m) ** 2 for x in xs) / (len(xs) - 1)
     return math.sqrt(var)
 
@@ -36,6 +46,25 @@ def triage_profile(
         level: "GREEN" | "AMBER" | "RED"
         flags: list of human-readable notes shown to the user
     """
+
+    # Normalize inputs safely
+    diabetes_type = (diabetes_type or "")
+    has_hypertension = bool(has_hypertension)
+    has_high_cholesterol = bool(has_high_cholesterol)
+    other_major_conditions = bool(other_major_conditions)
+
+    bp_sys = _to_num(bp_sys)
+    bp_dia = _to_num(bp_dia)
+    a1c = _to_num(a1c)
+    total_cholesterol = _to_num(total_cholesterol)
+
+    raw_fasting = fasting_readings or []
+    fasting_readings = []
+    for x in raw_fasting:
+        xn = _to_num(x)
+        if xn is not None:
+            fasting_readings.append(xn)
+
     flags: List[str] = []
     level = "GREEN"
 
@@ -95,7 +124,7 @@ def triage_profile(
                 level = "AMBER"
                 flags.append("Low fasting glucose detected — discuss with your clinician.")
             if len(fr) >= 2:
-                sd  = _std(fr)
+                sd = _std(fr)
                 rng = max(fr) - min(fr)
                 if rng >= TRIAGE["fasting_range_red"] or sd >= TRIAGE["fasting_std_red"]:
                     return "RED", ["Large variation in recent fasting readings — please see a clinician."]
