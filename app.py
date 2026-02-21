@@ -62,61 +62,62 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1. Sidebar collapse button ═══ */
-[data-testid="stSidebarCollapseButton"] { overflow:hidden !important; }
-[data-testid="stSidebarCollapseButton"] * { font-size:0 !important; color:transparent !important; }
-[data-testid="stSidebarCollapseButton"] svg { width:22px !important; height:22px !important; color:var(--txt2) !important; display:block !important; }
-[data-testid="collapsedControl"] { overflow:hidden !important; }
-[data-testid="collapsedControl"] * { font-size:0 !important; color:transparent !important; }
-[data-testid="collapsedControl"] svg { width:22px !important; height:22px !important; color:var(--txt2) !important; display:block !important; }
-
-/* ═══ 2. Expander arrow — THE REAL FIX ═══
-   Streamlit renders the arrow as a Material Icons ligature span.
-   When the font loads it's a glyph; when it doesn't it bleeds as "_arrow_right" text.
-   Strategy: load the font (above), then shrink the icon element to 0px and clip it.
-   We must NOT touch the <p> that contains the label text.
-*/
-/* Hide the named icon testid */
-[data-testid="stExpanderToggleIcon"] {
-    font-size: 0 !important;
-    width: 0 !important;
-    max-width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    display: inline-block !important;
-    visibility: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
+/* ═══ 1. Sidebar collapse button — PURE CSS FIX ═══ */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"] {
+    color: transparent !important; /* Hides fallback text */
 }
-/* Nuke the SVG arrow that Streamlit sometimes uses instead */
-[data-testid="stExpander"] details summary svg,
-[data-testid="stExpander"] summary svg {
+/* Hide default Streamlit icons/text spans */
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] span,
+[data-testid="collapsedControl"] span {
     display: none !important;
 }
-/* The icon is the FIRST child div inside the summary wrapper — zero it out */
-[data-testid="stExpander"] summary > div > div:first-child,
-[data-testid="stExpander"] summary > div:first-child {
-    font-size: 0 !important;
-    width: 0 !important;
-    max-width: 0 !important;
-    overflow: hidden !important;
-    flex: 0 0 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
+/* Inject a hardcoded SVG background for the Close Arrow */
+[data-testid="stSidebarCollapseButton"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 32px !important;
 }
-/* Protect label paragraph — always visible */
-[data-testid="stExpander"] summary p,
-[data-testid="stExpander"] summary > div > div p,
-[data-testid="stExpander"] .streamlit-expanderHeader p {
+/* Inject a hardcoded SVG background for the Open Arrow */
+[data-testid="collapsedControl"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 32px !important;
+}
+
+/* ═══ 2. Expander arrow — PURE CSS FIX ═══ */
+[data-testid="stExpanderToggleIcon"] {
+    color: transparent !important; /* Hides fallback text */
+    /* Inject our own SVG arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E2E8F0'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.2s ease !important;
+    display: inline-block !important;
+}
+/* Hide Streamlit's default SVG or text spans */
+[data-testid="stExpanderToggleIcon"] svg,
+[data-testid="stExpanderToggleIcon"] span {
+    display: none !important;
+}
+/* Ensure the label text is perfectly visible */
+[data-testid="stExpander"] summary p {
     color: var(--txt) !important;
     font-size: 0.95rem !important;
     font-weight: 600 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: auto !important;
-    max-width: 100% !important;
+}
+/* Rotate the arrow when the expander is opened */
+[data-testid="stExpander"] details[open] summary [data-testid="stExpanderToggleIcon"] {
+    transform: rotate(180deg) !important;
 }
 
 /* ═══ 3. Base ═══ */
@@ -375,64 +376,6 @@ hr { border-color:var(--border) !important; margin:16px 0 !important; }
 /* ── Footer ── */
 .footer { font-size:0.78rem; color:var(--txt3) !important; text-align:center; padding:12px 0; border-top:1px solid var(--border); margin-top:32px; }
 </style>
-
-/* ═══ 1. Sidebar collapse button — PURE CSS FIX ═══ */
-[data-testid="stSidebarCollapseButton"],
-[data-testid="collapsedControl"] {
-    color: transparent !important; /* Hides fallback text */
-}
-/* Hide default Streamlit icons/text spans */
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="collapsedControl"] svg,
-[data-testid="stSidebarCollapseButton"] span,
-[data-testid="collapsedControl"] span {
-    display: none !important;
-}
-/* Inject a hardcoded SVG background for the Close Arrow */
-[data-testid="stSidebarCollapseButton"] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 32px !important;
-}
-/* Inject a hardcoded SVG background for the Open Arrow */
-[data-testid="collapsedControl"] {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 32px !important;
-}
-
-/* ═══ 2. Expander arrow — PURE CSS FIX ═══ */
-[data-testid="stExpanderToggleIcon"] {
-    color: transparent !important; /* Hides fallback text */
-    /* Inject our own SVG arrow */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E2E8F0'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E") !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: 24px !important;
-    width: 24px !important;
-    height: 24px !important;
-    transition: transform 0.2s ease !important;
-    display: inline-block !important;
-}
-/* Hide Streamlit's default SVG or text spans */
-[data-testid="stExpanderToggleIcon"] svg,
-[data-testid="stExpanderToggleIcon"] span {
-    display: none !important;
-}
-/* Ensure the label text is perfectly visible */
-[data-testid="stExpander"] summary p {
-    color: var(--txt) !important;
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-}
-/* Rotate the arrow when the expander is opened */
-[data-testid="stExpander"] details[open] summary [data-testid="stExpanderToggleIcon"] {
-    transform: rotate(180deg) !important;
-}
 """, unsafe_allow_html=True)
 
 
@@ -751,7 +694,7 @@ if ss.get("setup_step") in (1, 2):
 # ══════════════════════════════════════════════════════════════════════════════
 #  MAIN APP
 # ══════════════════════════════════════════════════════════════════════════════
-if "current_tip"     not in ss: ss["current_tip"]    = get_tip(_lang())
+if "current_tip"     not in ss: ss["current_tip"]     = get_tip(_lang())
 if "chat_history"    not in ss: ss["chat_history"]    = []
 if "editing_profile" not in ss: ss["editing_profile"] = False
 
