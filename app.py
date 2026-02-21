@@ -81,45 +81,22 @@ st.markdown("""
     color: var(--txt2) !important; display: block !important;
 }
 
-/* ═══ 1B. Expander icon — kill "_arrow_right" / "arrow_drop_down" text ═══
-   Root cause: Streamlit renders the expand icon as a Material Icons ligature span.
-   When the font is absent the ligature name shows as plain text.
-   Fix A: load Material Icons font (above).
-   Fix B (belt-and-suspenders): hide the icon span text, show a CSS arrow instead. */
-
-/* Hide the broken icon text node */
-[data-testid="stExpander"] details > summary > div:first-child,
-[data-testid="stExpander"] details > summary > span:first-child,
-[data-testid="stExpanderToggleIcon"],
-.streamlit-expanderToggleIcon {
-    font-size: 0        !important;
-    color: transparent  !important;
-    width: 0            !important;
-    overflow: hidden    !important;
-    display: none       !important;
+/* ═══ 1B. Expander icon — targeted fix ═══
+   Only hide the specific icon element, never the label text container.
+   [data-testid="stExpanderToggleIcon"] is the icon span — kill only that. */
+[data-testid="stExpanderToggleIcon"] {
+    display: none !important;
 }
-
-/* Replace with a clean CSS-only expand indicator */
-[data-testid="stExpander"] details > summary {
-    list-style: none !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    cursor: pointer !important;
-    padding: 12px 16px !important;
-}
-[data-testid="stExpander"] details > summary::before {
-    content: "›" !important;
-    font-size: 1.3rem !important;
-    font-weight: 700 !important;
-    color: var(--green) !important;
-    transition: transform 0.2s ease !important;
-    display: inline-block !important;
-    line-height: 1 !important;
-    flex-shrink: 0 !important;
-}
-[data-testid="stExpander"] details[open] > summary::before {
-    transform: rotate(90deg) !important;
+/* The label paragraph inside the expander header must always be visible */
+[data-testid="stExpander"] summary p,
+[data-testid="stExpander"] .streamlit-expanderHeader p,
+[data-testid="stExpander"] [data-testid="stExpanderHeader"] p {
+    color: var(--txt)   !important;
+    font-size: 0.95rem  !important;
+    font-weight: 600    !important;
+    display: block      !important;
+    visibility: visible !important;
+    opacity: 1          !important;
 }
 
 /* ═══ 2. Base ═══ */
@@ -425,29 +402,21 @@ hr { border-color: var(--border) !important; margin: 16px 0 !important; }
 </style>
 
 <script>
-/* Belt-and-suspenders: JS MutationObserver to kill any icon text
-   that CSS cannot catch (e.g. text nodes inside shadow DOM or
-   elements that re-render after hydration). */
 (function(){
-    function killIconText() {
-        /* 1. Sidebar collapse button */
+    function fixIcons() {
+        /* Only hide elements with the specific icon testid — never touch label text */
+        document.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(el => {
+            el.style.cssText = 'display:none!important';
+        });
+        /* Sidebar collapse button: strip text nodes, keep SVG */
         document.querySelectorAll(
             '[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]'
         ).forEach(el => {
             el.childNodes.forEach(n => { if(n.nodeType===3) n.textContent=''; });
         });
-        /* 2. Expander toggle icon spans */
-        document.querySelectorAll(
-            '[data-testid="stExpanderToggleIcon"],' +
-            '[data-testid="stExpander"] details > summary > span:first-child,' +
-            '[data-testid="stExpander"] details > summary > div:first-child'
-        ).forEach(el => {
-            el.style.display = 'none';
-            el.childNodes.forEach(n => { if(n.nodeType===3) n.textContent=''; });
-        });
     }
-    killIconText();
-    new MutationObserver(killIconText).observe(document.body,{childList:true,subtree:true});
+    fixIcons();
+    new MutationObserver(fixIcons).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 """, unsafe_allow_html=True)
