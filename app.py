@@ -376,39 +376,63 @@ hr { border-color:var(--border) !important; margin:16px 0 !important; }
 .footer { font-size:0.78rem; color:var(--txt3) !important; text-align:center; padding:12px 0; border-top:1px solid var(--border); margin-top:32px; }
 </style>
 
-<script>
-(function(){
-    function fixExpanders(){
-        // Find every expander summary and nuke the icon node (first child of the flex row)
-        document.querySelectorAll('[data-testid="stExpander"] summary').forEach(function(summary){
-            // Hide any SVG arrows
-            summary.querySelectorAll('svg').forEach(function(svg){
-                svg.style.cssText = 'display:none!important;';
-            });
-            // Find the toggle icon by testid
-            summary.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(function(el){
-                el.style.cssText = 'font-size:0!important;width:0!important;max-width:0!important;height:0!important;overflow:hidden!important;visibility:hidden!important;padding:0!important;margin:0!important;flex:0 0 0!important;min-width:0!important;display:inline-block!important;';
-            });
-            // Also zero-out any span that holds the Material Icons ligature text directly
-            summary.querySelectorAll('span').forEach(function(span){
-                // Only target spans that are NOT inside a <p> (those are labels)
-                if(!span.closest('p') && (span.className||'').includes('material')){
-                    span.style.cssText = 'font-size:0!important;width:0!important;overflow:hidden!important;';
-                }
-            });
-        });
+/* ═══ 1. Sidebar collapse button — PURE CSS FIX ═══ */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"] {
+    color: transparent !important; /* Hides fallback text */
+}
+/* Hide default Streamlit icons/text spans */
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] span,
+[data-testid="collapsedControl"] span {
+    display: none !important;
+}
+/* Inject a hardcoded SVG background for the Close Arrow */
+[data-testid="stSidebarCollapseButton"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 32px !important;
+}
+/* Inject a hardcoded SVG background for the Open Arrow */
+[data-testid="collapsedControl"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 32px !important;
+}
 
-        // Sidebar collapse button — strip bare text nodes, preserve SVG
-        document.querySelectorAll('[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]').forEach(function(el){
-            el.childNodes.forEach(function(n){ if(n.nodeType===3) n.textContent=''; });
-        });
-    }
-
-    // Run immediately and watch for DOM changes (Streamlit re-renders on interaction)
-    fixExpanders();
-    new MutationObserver(fixExpanders).observe(document.body, {childList:true, subtree:true});
-})();
-</script>
+/* ═══ 2. Expander arrow — PURE CSS FIX ═══ */
+[data-testid="stExpanderToggleIcon"] {
+    color: transparent !important; /* Hides fallback text */
+    /* Inject our own SVG arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E2E8F0'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    transition: transform 0.2s ease !important;
+    display: inline-block !important;
+}
+/* Hide Streamlit's default SVG or text spans */
+[data-testid="stExpanderToggleIcon"] svg,
+[data-testid="stExpanderToggleIcon"] span {
+    display: none !important;
+}
+/* Ensure the label text is perfectly visible */
+[data-testid="stExpander"] summary p {
+    color: var(--txt) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+}
+/* Rotate the arrow when the expander is opened */
+[data-testid="stExpander"] details[open] summary [data-testid="stExpanderToggleIcon"] {
+    transform: rotate(180deg) !important;
+}
 """, unsafe_allow_html=True)
 
 
