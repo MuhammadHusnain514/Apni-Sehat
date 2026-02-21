@@ -425,44 +425,20 @@ hr { border-color: var(--border) !important; margin: 16px 0 !important; }
 # ── Helpers ───────────────────────────────────────────────────────────────────
 ss = st.session_state
 
-def normalize_phone(p):
-    p = "" if p is None else str(p)
-    return re.sub(r"[^\d+]", "", p.strip())
-
+def normalize_phone(p): return re.sub(r"[^\d+]", "", p.strip())
 def user_key_from_phone(p):
     salt = os.getenv("PHONE_SALT", "dev-salt-change-me")
     return hashlib.sha256((salt + p).encode()).hexdigest()
-
 def last4(p):
-    d = re.sub(r"\D", "", str(p or ""))
+    d = re.sub(r"\D", "", p)
     return d[-4:] if len(d) >= 4 else d
-
-def _to_num(x, default=0.0):
-    """Safely convert DB/user values to float."""
-    try:
-        if x is None or x == "":
-            return float(default)
-        return float(x)
-    except (TypeError, ValueError):
-        return float(default)
 
 def _lang():  return ss.get("lang", "en")
 def t(k):     return T[_lang()].get(k, T["en"].get(k, k))
 def _get_user():     return ss.get("user_key", "").strip()
 def _triage_level(): return ss.get("triage_level")
 def _blocked():      return _triage_level() == "RED"
-
-def _parse_fastings(v):
-    out = []
-    for x in (v or []):
-        try:
-            x = float(x)
-            if x > 0:
-                out.append(x)
-        except (TypeError, ValueError):
-            continue
-    return out
-
+def _parse_fastings(v): return [x for x in v if x and x > 0]
 
 def _lang_toggle(suffix=""):
     lbl = "🌐 اردو" if _lang() == "en" else "🌐 English"
