@@ -59,19 +59,37 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1. Sidebar + Expander icon fix ═══ */
-/* Use maximum specificity to beat Streamlit's own stylesheet */
+/* ═══ 1. Sidebar + Expander icon fix — nuclear edition ═══ */
+/* Completely eliminate Material Symbols / Icons ligature text */
 html body .stApp .material-symbols-rounded,
 html body .material-symbols-rounded,
-.material-symbols-rounded {
-    font-size: 0px !important;
-    width: 0px !important;
-    height: 0px !important;
+.material-symbols-rounded,
+span.material-symbols-rounded,
+button span.material-symbols-rounded,
+[data-testid] span.material-symbols-rounded {
+    font-size: 0 !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    height: 0 !important;
+    max-height: 0 !important;
     display: inline-block !important;
     overflow: hidden !important;
     color: transparent !important;
     line-height: 0 !important;
     opacity: 0 !important;
+    visibility: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    pointer-events: none !important;
+}
+/* Also kill the sidebar collapse icon text specifically */
+[data-testid="stSidebarCollapseButton"] button p,
+[data-testid="collapsedControl"] button p {
+    font-size: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    color: transparent !important;
 }
 /* Sidebar */
 [data-testid="stSidebarCollapseButton"] button,
@@ -177,6 +195,18 @@ h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt) !
     padding:0.5rem 1.2rem !important; transition:all 0.15s ease !important;
 }
 .stButton > button:hover { background:#1E2D1E !important; border-color:var(--green) !important; }
+
+/* Day-accordion full-width header button */
+.day-acc-row .stButton > button {
+    width: 100% !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    color: var(--txt) !important;
+    font-size: 0.96rem !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    letter-spacing: 0 !important;
+}
 
 /* ═══ 7. Inputs ═══ */
 .stTextInput > div > div > input, .stNumberInput > div > div > input,
@@ -714,25 +744,51 @@ if not ss.get("week_plan"):
 # Late CSS injection — appears after Streamlit's own styles in DOM, guaranteed to win
 st.markdown("""
 <style>
+/* Late override — wins specificity race against Streamlit defaults */
 html body .material-symbols-rounded,
-html body span.material-symbols-rounded {
-    font-size: 0px !important;
-    width: 0px !important;
-    height: 0px !important;
+html body span.material-symbols-rounded,
+button span.material-symbols-rounded {
+    font-size: 0 !important;
+    width: 0 !important;
+    max-width: 0 !important;
+    height: 0 !important;
     overflow: hidden !important;
     opacity: 0 !important;
+    visibility: hidden !important;
     color: transparent !important;
     display: inline-block !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 [data-testid="stExpanderToggleIcon"],
 [data-testid="stExpanderToggleIcon"] * {
-    font-size: 0px !important;
-    width: 0px !important;
-    height: 0px !important;
+    font-size: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
     overflow: hidden !important;
     opacity: 0 !important;
     position: absolute !important;
     color: transparent !important;
+}
+/* Day accordion full-width header button — left-aligned with subtle styling */
+.day-acc-row .stButton > button {
+    width: 100% !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    color: var(--txt) !important;
+    font-size: 0.96rem !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    letter-spacing: 0 !important;
+    background: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    margin-bottom: 4px !important;
+}
+.day-acc-row .stButton > button:hover {
+    background: #1a2030 !important;
+    border-color: var(--green) !important;
+    color: var(--txt) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -908,29 +964,22 @@ with tabs[0]:
             day_carbs = sum(day[s]["carb_servings"]*CARB["carb_serving_grams"] for s in slots if s in day)
             day_num   = day["day"]
             is_open   = day_num in ss["open_days"]
-            arrow     = "▲" if is_open else "▼"
             day_label = (f"Day {day_num}  ·  ~{day_carbs:.0f}g {t('carbs_label')}"
                          if _lang()=="en" else
                          f"دن {day_num}  ·  ~{day_carbs:.0f}g {t('carbs_label')}")
 
-            # Header row — plain button, no expander
-            st.markdown(
-                f'<div style="background:var(--bg2);border:1px solid var(--border);'
-                f'border-radius:10px;padding:2px 4px;margin-bottom:6px;">'
-                f'</div>', unsafe_allow_html=True)
-            hcol, acol = st.columns([9, 1])
-            with hcol:
-                st.markdown(
-                    f'<div style="padding:10px 14px;font-weight:600;font-size:0.96rem;'
-                    f'color:var(--txt);">📅 {day_label}</div>',
-                    unsafe_allow_html=True)
-            with acol:
-                if st.button(arrow, key=f"day_tog_{day_num}"):
-                    if is_open:
-                        ss["open_days"].discard(day_num)
-                    else:
-                        ss["open_days"].add(day_num)
-                    st.rerun()
+            # ── FIX: single full-width button (no column split → no icon overflow) ──
+            arrow = "▲" if is_open else "▽"
+            btn_label = f"📅  {day_label}    {arrow}"
+            # Wrap in a div so our CSS class targets only these buttons
+            st.markdown('<div class="day-acc-row">', unsafe_allow_html=True)
+            if st.button(btn_label, key=f"day_tog_{day_num}", use_container_width=True):
+                if is_open:
+                    ss["open_days"].discard(day_num)
+                else:
+                    ss["open_days"].add(day_num)
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
             # Content — only shown when open
             if is_open:
