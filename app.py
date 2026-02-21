@@ -40,7 +40,9 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
-/* ── Tokens ── */
+/* ══════════════════════════════════════════
+   DARK MODE TOKENS (default)
+══════════════════════════════════════════ */
 :root {
     --bg:      #0d1117;
     --bg2:     #161b22;
@@ -54,13 +56,37 @@ st.markdown("""
     --blue:    #58a6ff;
     --txt:     #e6edf3;
     --txt2:    #8b949e;
-    --txt3:    #8b949e;
-    color-scheme: dark;
+    --txt3:    #9ca3af;
+    --shadow:  rgba(0,0,0,0.4);
+    color-scheme: dark light;
+}
+
+/* ══════════════════════════════════════════
+   LIGHT MODE TOKENS
+══════════════════════════════════════════ */
+@media (prefers-color-scheme: light) {
+    :root {
+        --bg:      #ffffff;
+        --bg2:     #f6f8fa;
+        --bg3:     #eaeef2;
+        --border:  #d0d7de;
+        --green:   #1a7f37;
+        --green2:  #2da44e;
+        --green-t: rgba(26,127,55,0.1);
+        --amber:   #9a6700;
+        --red:     #cf222e;
+        --blue:    #0969da;
+        --txt:     #1f2328;
+        --txt2:    #57606a;
+        --txt3:    #6e7781;
+        --shadow:  rgba(0,0,0,0.12);
+        color-scheme: light;
+    }
 }
 
 /* ── Base ── */
 html {
-    color-scheme: dark !important;
+    color-scheme: dark light;
 }
 html, body,
 .stApp,
@@ -74,7 +100,7 @@ div.block-container,
     color: var(--txt) !important;
 }
 
-/* ── Chat input — must be explicit or light-mode mobile renders black-on-black ── */
+/* ── Chat input ── */
 [data-testid="stChatInput"],
 [data-testid="stChatInputContainer"],
 [data-testid="stChatInputContainer"] > div,
@@ -82,7 +108,6 @@ div.block-container,
     background: var(--bg3) !important;
     color: var(--txt) !important;
     border-color: var(--border) !important;
-    color-scheme: dark !important;
 }
 [data-testid="stChatInputContainer"] textarea::placeholder {
     color: var(--txt3) !important;
@@ -93,7 +118,6 @@ div.block-container,
     color: #fff !important;
     border: none !important;
 }
-/* Bottom chat bar wrapper */
 [data-testid="stBottom"],
 [data-testid="stBottom"] > div {
     background: var(--bg) !important;
@@ -108,41 +132,22 @@ div.block-container,
     border-right: 1px solid var(--border) !important;
 }
 
-/* ── Typography — SAFE: only block-level & known containers ── */
+/* ── Typography ── */
 [data-testid="stMarkdownContainer"] p,
 [data-testid="stMarkdownContainer"] li,
-[data-testid="stMarkdownContainer"] h1,
-[data-testid="stMarkdownContainer"] h2,
-[data-testid="stMarkdownContainer"] h3,
 [data-testid="stCaptionContainer"] p,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] li,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] caption,
-.stButton > button,
-.stTextInput > label,
-.stSelectbox > label,
-.stNumberInput > label,
-.stTextArea > label,
-.stRadio > label,
-.stCheckbox > label,
-.stDateInput > label,
-.stTimeInput > label,
-.stToggle > label,
-.stMultiSelect > label {
+[data-testid="stSidebar"] label {
     font-family: 'Inter', sans-serif !important;
     color: var(--txt) !important;
 }
-
 [data-testid="stMarkdownContainer"] p,
-[data-testid="stSidebar"] p { font-size: 1.08rem !important; line-height: 1.85 !important; }
-
+[data-testid="stSidebar"] p        { font-size: 1.08rem !important; line-height: 1.85 !important; }
+[data-testid="stCaptionContainer"] p { font-size: 0.95rem !important; color: var(--txt3) !important; line-height: 1.75 !important; }
 [data-testid="stMarkdownContainer"] h1 { font-size: 2.3rem !important; font-weight: 800 !important; color: var(--green) !important; letter-spacing: -0.5px !important; }
 [data-testid="stMarkdownContainer"] h2 { font-size: 1.55rem !important; font-weight: 700 !important; color: var(--green) !important; }
 [data-testid="stMarkdownContainer"] h3 { font-size: 1.25rem !important; font-weight: 700 !important; color: var(--txt) !important; }
-
-[data-testid="stCaptionContainer"] p  { font-size: 0.95rem !important; color: #9ca3af !important; line-height: 1.75 !important; }
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
@@ -196,10 +201,8 @@ div.block-container,
 .stButton > button[kind="primary"]:hover {
     background: var(--green) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 14px rgba(63,185,80,0.35) !important;
+    box-shadow: 0 4px 14px var(--green-t) !important;
 }
-
-/* day-acc-row removed — using native st.expander */
 
 /* ── Inputs ── */
 [data-baseweb="input"] input,
@@ -217,20 +220,13 @@ div.block-container,
 [data-baseweb="input"] input:focus,
 [data-baseweb="textarea"] textarea:focus {
     border-color: var(--green) !important;
-    box-shadow: 0 0 0 3px rgba(63,185,80,0.12) !important;
+    box-shadow: 0 0 0 3px var(--green-t) !important;
 }
 
 /* ── Labels ── */
-.stTextInput label,
-.stNumberInput label,
-.stTextArea label,
-.stSelectbox label,
-.stDateInput label,
-.stTimeInput label,
-.stRadio legend,
-.stCheckbox label,
-.stToggle label,
-.stMultiSelect label {
+.stTextInput label, .stNumberInput label, .stTextArea label,
+.stSelectbox label, .stDateInput label, .stTimeInput label,
+.stRadio legend, .stCheckbox label, .stToggle label, .stMultiSelect label {
     color: var(--txt2) !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
@@ -288,10 +284,14 @@ div.block-container,
 }
 
 /* ── Alerts ── */
-[data-testid="stSuccess"] { background: #0d2018 !important; border-left: 3px solid var(--green) !important; border-radius: 6px !important; }
-[data-testid="stInfo"]    { background: #0d1c36 !important; border-left: 3px solid var(--blue) !important;  border-radius: 6px !important; }
-[data-testid="stWarning"] { background: #1f1700 !important; border-left: 3px solid var(--amber) !important; border-radius: 6px !important; }
-[data-testid="stError"]   { background: #1f0a0a !important; border-left: 3px solid var(--red) !important;   border-radius: 6px !important; }
+[data-testid="stSuccess"] { background: var(--green-t) !important; border-left: 3px solid var(--green) !important; border-radius: 6px !important; }
+[data-testid="stInfo"]    { background: rgba(88,166,255,0.1) !important; border-left: 3px solid var(--blue) !important;  border-radius: 6px !important; }
+[data-testid="stWarning"] { background: rgba(210,153,34,0.1) !important; border-left: 3px solid var(--amber) !important; border-radius: 6px !important; }
+[data-testid="stError"]   { background: rgba(248,81,73,0.1) !important;  border-left: 3px solid var(--red) !important;   border-radius: 6px !important; }
+[data-testid="stSuccess"] p, [data-testid="stSuccess"] li { color: var(--txt) !important; }
+[data-testid="stInfo"]    p, [data-testid="stInfo"]    li { color: var(--txt) !important; }
+[data-testid="stWarning"] p, [data-testid="stWarning"] li { color: var(--txt) !important; }
+[data-testid="stError"]   p, [data-testid="stError"]   li { color: var(--txt) !important; }
 
 /* ── Expander ── */
 [data-testid="stExpander"] {
@@ -304,33 +304,36 @@ div.block-container,
 [data-testid="stExpander"] > div > div { background: var(--bg2) !important; padding: 12px 16px !important; }
 
 /* ── Dataframe ── */
-[data-testid="stDataFrame"] { background: var(--bg2) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; }
+[data-testid="stDataFrame"] {
+    background: var(--bg2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
 
-/* ── Date / Time ── */
+/* ── Date / Time / Number steppers ── */
 input[type="date"], input[type="time"] {
     background: var(--bg3) !important;
     color: var(--txt) !important;
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
 }
-
-/* ── Number input stepper buttons ── */
 .stNumberInput button {
     background: var(--bg3) !important;
     border-color: var(--border) !important;
     color: var(--txt2) !important;
 }
 
-/* ── Divider ── */
+/* ── Misc ── */
 hr { border-color: var(--border) !important; }
-
-/* ── Spinner ── */
 [data-testid="stSpinner"] p { color: var(--green) !important; }
 [data-baseweb="tag"] { background: var(--green-t) !important; color: var(--green) !important; }
 
-/* ── Custom components ── */
+/* ══════════════════════════════════════════
+   CUSTOM COMPONENTS
+══════════════════════════════════════════ */
+
 .tip-banner {
-    background: linear-gradient(135deg, #0d2018, #0d1f14);
+    background: var(--green-t);
     border: 1px solid var(--green2);
     border-radius: 10px;
     padding: 16px 20px;
@@ -338,7 +341,7 @@ hr { border-color: var(--border) !important; }
     font-family: 'Inter', sans-serif;
     font-size: 1.08rem;
     line-height: 1.85;
-    color: #aff4c2;
+    color: var(--txt);
 }
 .tip-label {
     font-family: 'Inter', sans-serif;
@@ -359,23 +362,30 @@ hr { border-color: var(--border) !important; }
     margin-bottom: 16px;
     font-family: 'Inter', sans-serif;
 }
-.profile-name  { font-size: 1.2rem; font-weight: 700; color: var(--txt);  }
-.profile-detail{ font-size: 0.98rem; color: var(--txt2); margin-top: 3px;  }
-.badge-g { background: #0d2018; color: #3fb950; border: 1px solid #2ea043; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-a { background: #1f1700; color: #d29922; border: 1px solid #9e6a03; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-r { background: #1f0a0a; color: #f85149; border: 1px solid #b91c1c; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-n { background: var(--bg3); color: var(--txt3); border: 1px solid var(--border); border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.profile-name   { font-size: 1.2rem;  font-weight: 700; color: var(--txt);  }
+.profile-detail { font-size: 0.98rem; color: var(--txt2); margin-top: 3px;  }
+
+.badge-g { background: var(--green-t); color: var(--green);  border: 1px solid var(--green2); border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-a { background: rgba(210,153,34,0.1); color: var(--amber);  border: 1px solid var(--amber);  border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-r { background: rgba(248,81,73,0.1);  color: var(--red);    border: 1px solid var(--red);    border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-n { background: var(--bg3);           color: var(--txt3);   border: 1px solid var(--border); border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+
 .bubble-user {
-    background: #0d2018; border: 1px solid var(--green2); border-radius: 12px 12px 3px 12px;
+    background: var(--green-t);
+    border: 1px solid var(--green2);
+    border-radius: 12px 12px 3px 12px;
     padding: 12px 16px; margin: 6px 0; margin-left: 8%;
-    font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; color: #aff4c2;
+    font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; color: var(--txt);
 }
 .bubble-bot {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px 12px 12px 3px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 3px;
     padding: 12px 16px; margin: 6px 0; margin-right: 8%;
     font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; color: var(--txt);
 }
 .bubble-label { font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--txt3); margin-bottom: 3px; }
+
 .wizard-box {
     background: var(--bg2); border: 1px solid var(--border);
     border-top: 3px solid var(--green); border-radius: 10px;
@@ -383,7 +393,7 @@ hr { border-color: var(--border) !important; }
     font-family: 'Inter', sans-serif;
 }
 .step-pill {
-    background: #0d2018; color: var(--green); border: 1px solid var(--green2);
+    background: var(--green-t); color: var(--green); border: 1px solid var(--green2);
     border-radius: 20px; padding: 3px 12px; font-size: 0.73rem; font-weight: 700;
     display: inline-block; margin-bottom: 12px; font-family: 'Inter', sans-serif;
 }
@@ -392,9 +402,9 @@ hr { border-color: var(--border) !important; }
     padding: 22px 24px; height: 100%; font-family: 'Inter', sans-serif;
 }
 .sb-disc {
-    background: #1a1200; border: 1px solid #3a2800; border-left: 3px solid var(--amber);
-    border-radius: 6px; padding: 10px 12px; margin-top: 4px;
-    font-family: 'Inter', sans-serif;
+    background: rgba(210,153,34,0.08); border: 1px solid var(--amber);
+    border-left: 3px solid var(--amber); border-radius: 6px;
+    padding: 10px 12px; margin-top: 4px; font-family: 'Inter', sans-serif;
 }
 .sb-disc-title { font-size: 0.92rem; font-weight: 700; color: var(--amber); margin-bottom: 4px; font-family: 'Inter', sans-serif; }
 .meal-slot { font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
@@ -405,7 +415,7 @@ hr { border-color: var(--border) !important; }
 }
 .login-hero { text-align: center; padding: 48px 20px 28px; }
 .login-hero-logo { font-family: 'Inter', sans-serif; font-size: 4rem; font-weight: 900; color: var(--green); letter-spacing: -2px; line-height: 1; display: block; }
-.login-hero-urdu { font-size: 2.2rem; color: #3fb950; font-weight: 700; display: block; margin-top: 4px; }
+.login-hero-urdu { font-size: 2.2rem; color: var(--green); font-weight: 700; display: block; margin-top: 4px; }
 .login-hero-sub  { font-family: 'Inter', sans-serif; font-size: 1.15rem; color: var(--txt2); margin-top: 10px; display: block; }
 .footer { font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--txt3); text-align: center; padding: 10px 0; border-top: 1px solid var(--border); margin-top: 28px; }
 </style>
