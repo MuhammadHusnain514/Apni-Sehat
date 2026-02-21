@@ -106,13 +106,13 @@ div.block-container,
 }
 
 [data-testid="stMarkdownContainer"] p,
-[data-testid="stSidebar"] p { font-size: 0.95rem !important; line-height: 1.7 !important; }
+[data-testid="stSidebar"] p { font-size: 1.08rem !important; line-height: 1.85 !important; }
 
-[data-testid="stMarkdownContainer"] h1 { font-size: 2rem !important; font-weight: 800 !important; color: var(--green) !important; letter-spacing: -0.5px !important; }
-[data-testid="stMarkdownContainer"] h2 { font-size: 1.35rem !important; font-weight: 700 !important; color: var(--green) !important; }
-[data-testid="stMarkdownContainer"] h3 { font-size: 1.1rem !important; font-weight: 700 !important; color: var(--txt) !important; }
+[data-testid="stMarkdownContainer"] h1 { font-size: 2.3rem !important; font-weight: 800 !important; color: var(--green) !important; letter-spacing: -0.5px !important; }
+[data-testid="stMarkdownContainer"] h2 { font-size: 1.55rem !important; font-weight: 700 !important; color: var(--green) !important; }
+[data-testid="stMarkdownContainer"] h3 { font-size: 1.25rem !important; font-weight: 700 !important; color: var(--txt) !important; }
 
-[data-testid="stCaptionContainer"] p  { font-size: 0.8rem !important; color: var(--txt3) !important; line-height: 1.6 !important; }
+[data-testid="stCaptionContainer"] p  { font-size: 0.92rem !important; color: var(--txt3) !important; line-height: 1.7 !important; }
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
@@ -124,7 +124,7 @@ div.block-container,
     background: transparent !important;
     color: var(--txt2) !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.875rem !important;
+    font-size: 1rem !important;
     font-weight: 600 !important;
     padding: 12px 20px !important;
     border-bottom: 2px solid transparent !important;
@@ -142,11 +142,11 @@ div.block-container,
 /* ── Buttons ── */
 .stButton > button {
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.9rem !important;
+    font-size: 1.05rem !important;
     font-weight: 600 !important;
     border-radius: 6px !important;
-    min-height: 38px !important;
-    padding: 0.45rem 1.1rem !important;
+    min-height: 46px !important;
+    padding: 0.6rem 1.3rem !important;
     transition: all 0.15s ease !important;
     background: var(--bg3) !important;
     color: var(--txt) !important;
@@ -182,7 +182,7 @@ div.block-container,
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.92rem !important;
+    font-size: 1.05rem !important;
 }
 [data-baseweb="input"] input:focus,
 [data-baseweb="textarea"] textarea:focus {
@@ -202,7 +202,7 @@ div.block-container,
 .stToggle label,
 .stMultiSelect label {
     color: var(--txt2) !important;
-    font-size: 0.8rem !important;
+    font-size: 0.9rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.04em !important;
     text-transform: uppercase !important;
@@ -221,7 +221,7 @@ div.block-container,
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
 }
-[data-baseweb="menu"] li { color: var(--txt) !important; font-size: 0.92rem !important; }
+[data-baseweb="menu"] li { color: var(--txt) !important; font-size: 1.05rem !important; }
 [data-baseweb="menu"] li:hover { background: var(--bg3) !important; }
 
 /* ── Radio / Checkbox / Toggle ── */
@@ -229,7 +229,7 @@ div.block-container,
 .stCheckbox label,
 .stToggle label {
     color: var(--txt) !important;
-    font-size: 0.92rem !important;
+    font-size: 1.05rem !important;
     font-weight: 400 !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
@@ -244,14 +244,14 @@ div.block-container,
 }
 [data-testid="stMetricValue"] {
     font-family: 'Inter', sans-serif !important;
-    font-size: 1.7rem !important;
+    font-size: 2rem !important;
     font-weight: 800 !important;
     color: var(--green) !important;
 }
 [data-testid="stMetricLabel"] {
     font-family: 'Inter', sans-serif !important;
     color: var(--txt2) !important;
-    font-size: 0.78rem !important;
+    font-size: 0.88rem !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
@@ -306,13 +306,13 @@ hr { border-color: var(--border) !important; }
     padding: 16px 20px;
     margin-bottom: 18px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.93rem;
-    line-height: 1.7;
+    font-size: 1.08rem;
+    line-height: 1.85;
     color: #aff4c2;
 }
 .tip-label {
     font-family: 'Inter', sans-serif;
-    font-size: 0.66rem;
+    font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -329,23 +329,23 @@ hr { border-color: var(--border) !important; }
     margin-bottom: 16px;
     font-family: 'Inter', sans-serif;
 }
-.profile-name  { font-size: 1.05rem; font-weight: 700; color: var(--txt);  }
-.profile-detail{ font-size: 0.85rem; color: var(--txt2); margin-top: 3px;  }
-.badge-g { background: #0d2018; color: #3fb950; border: 1px solid #2ea043; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-a { background: #1f1700; color: #d29922; border: 1px solid #9e6a03; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-r { background: #1f0a0a; color: #f85149; border: 1px solid #b91c1c; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; display: inline-block; font-family: 'Inter', sans-serif; }
-.badge-n { background: var(--bg3); color: var(--txt3); border: 1px solid var(--border); border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.8rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.profile-name  { font-size: 1.2rem; font-weight: 700; color: var(--txt);  }
+.profile-detail{ font-size: 0.98rem; color: var(--txt2); margin-top: 3px;  }
+.badge-g { background: #0d2018; color: #3fb950; border: 1px solid #2ea043; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-a { background: #1f1700; color: #d29922; border: 1px solid #9e6a03; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-r { background: #1f0a0a; color: #f85149; border: 1px solid #b91c1c; border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
+.badge-n { background: var(--bg3); color: var(--txt3); border: 1px solid var(--border); border-radius: 5px; padding: 2px 10px; font-weight: 700; font-size: 0.9rem; display: inline-block; font-family: 'Inter', sans-serif; }
 .bubble-user {
     background: #0d2018; border: 1px solid var(--green2); border-radius: 12px 12px 3px 12px;
     padding: 12px 16px; margin: 6px 0; margin-left: 8%;
-    font-family: 'Inter', sans-serif; font-size: 0.92rem; line-height: 1.7; color: #aff4c2;
+    font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; color: #aff4c2;
 }
 .bubble-bot {
     background: var(--bg2); border: 1px solid var(--border); border-radius: 12px 12px 12px 3px;
     padding: 12px 16px; margin: 6px 0; margin-right: 8%;
-    font-family: 'Inter', sans-serif; font-size: 0.92rem; line-height: 1.7; color: var(--txt);
+    font-family: 'Inter', sans-serif; font-size: 1.05rem; line-height: 1.85; color: var(--txt);
 }
-.bubble-label { font-family: 'Inter', sans-serif; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--txt3); margin-bottom: 3px; }
+.bubble-label { font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--txt3); margin-bottom: 3px; }
 .wizard-box {
     background: var(--bg2); border: 1px solid var(--border);
     border-top: 3px solid var(--green); border-radius: 10px;
@@ -366,18 +366,18 @@ hr { border-color: var(--border) !important; }
     border-radius: 6px; padding: 10px 12px; margin-top: 4px;
     font-family: 'Inter', sans-serif;
 }
-.sb-disc-title { font-size: 0.8rem; font-weight: 700; color: var(--amber); margin-bottom: 4px; font-family: 'Inter', sans-serif; }
-.meal-slot { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+.sb-disc-title { font-size: 0.92rem; font-weight: 700; color: var(--amber); margin-bottom: 4px; font-family: 'Inter', sans-serif; }
+.meal-slot { font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
 .section-label {
-    font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 700; color: var(--txt3);
+    font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--txt3);
     text-transform: uppercase; letter-spacing: 0.1em;
     border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 12px;
 }
 .login-hero { text-align: center; padding: 48px 20px 28px; }
-.login-hero-logo { font-family: 'Inter', sans-serif; font-size: 3.6rem; font-weight: 900; color: var(--green); letter-spacing: -2px; line-height: 1; display: block; }
-.login-hero-urdu { font-size: 1.9rem; color: #3fb950; font-weight: 700; display: block; margin-top: 4px; }
-.login-hero-sub  { font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--txt2); margin-top: 10px; display: block; }
-.footer { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--txt3); text-align: center; padding: 10px 0; border-top: 1px solid var(--border); margin-top: 28px; }
+.login-hero-logo { font-family: 'Inter', sans-serif; font-size: 4rem; font-weight: 900; color: var(--green); letter-spacing: -2px; line-height: 1; display: block; }
+.login-hero-urdu { font-size: 2.2rem; color: #3fb950; font-weight: 700; display: block; margin-top: 4px; }
+.login-hero-sub  { font-family: 'Inter', sans-serif; font-size: 1.15rem; color: var(--txt2); margin-top: 10px; display: block; }
+.footer { font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--txt3); text-align: center; padding: 10px 0; border-top: 1px solid var(--border); margin-top: 28px; }
 </style>
 """, unsafe_allow_html=True)
 
