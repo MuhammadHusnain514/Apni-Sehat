@@ -41,9 +41,7 @@ st.markdown("""
 /* Inter font only — do NOT import Material Icons/Symbols.
    When those fonts fail to load they render raw ligature text as fallback. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-/* Load Material Symbols with display=block so it NEVER shows raw ligature text fallback.
-   'block' tells the browser to render nothing (not fallback text) until the font loads. */
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0&display=block');
+/* Material Symbols loaded by Streamlit — do not re-import */
 
 /* ═══ 0. Colour tokens ═══ */
 :root {
@@ -126,11 +124,21 @@ html, body { background:var(--bg) !important; font-family:'Inter',sans-serif !im
 [data-testid="block-container"], div.block-container, .main { background:var(--bg) !important; }
 
 /* ═══ 4. Typography ═══ */
-p, li, span, div, label, .stMarkdown p, .stMarkdown li {
+/* NOTE: 'span' and 'div' deliberately excluded — they would override
+   font-family on .material-symbols-rounded spans, causing icon ligature
+   text to render as plain text (e.g. "keyboard_double_arrow_right"). */
+p, li, label, .stMarkdown p, .stMarkdown li {
     font-family:'Inter',sans-serif !important;
     font-size:0.98rem !important;
     line-height:1.75 !important;
     color:var(--txt) !important;
+}
+/* Apply Inter to divs and spans only where it is safe to do so */
+div:not([class*="material"]):not([data-testid*="Icon"]) {
+    font-family:'Inter',sans-serif !important;
+}
+span:not(.material-symbols-rounded):not(.material-symbols-outlined):not(.material-symbols-sharp) {
+    font-family:'Inter',sans-serif !important;
 }
 h1 { font-size:1.9rem !important; font-weight:800 !important; color:var(--green) !important; letter-spacing:-0.5px !important; }
 h2 { font-size:1.4rem !important; font-weight:700 !important; color:var(--green) !important; }
