@@ -70,31 +70,51 @@ st.markdown("""
 [data-testid="collapsedControl"] svg {
     fill: var(--txt2) !important;
 }
-/* Silence ANY Material Icons fallback text in the sidebar button.
-   font-size:0 is the only method that works before font load resolves. */
+/* Nuke sidebar button icon text — position:absolute + every other method */
 [data-testid="stSidebarCollapseButton"] span,
 [data-testid="stSidebarCollapseButton"] [class*="material"],
+[data-testid="stSidebarCollapseButton"] [data-testid*="Icon"],
 [data-testid="collapsedControl"] span,
-[data-testid="collapsedControl"] [class*="material"] {
+[data-testid="collapsedControl"] [class*="material"],
+[data-testid="collapsedControl"] [data-testid*="Icon"] {
+    position: absolute !important;
+    visibility: hidden !important;
     font-size: 0 !important;
     color: transparent !important;
     line-height: 0 !important;
+    overflow: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
 }
 
-/* ═══ 2. Expander — fix Material Icons fallback text ═══ */
-/* font-size:0 is the only reliable method — works before AND after font load */
+/* ═══ 2. Expander — nuke fallback icon text completely ═══ */
+/* The icon element is BEFORE the label in DOM order. position:absolute pulls
+   it out of flow so it can never push the label text sideways. Every other
+   technique (font-size, visibility, overflow) is added as belt-and-suspenders. */
 [data-testid="stExpanderToggleIcon"] {
+    position: absolute !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
     font-size: 0 !important;
     line-height: 0 !important;
-    color: transparent !important;
-    user-select: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 [data-testid="stExpanderToggleIcon"] * {
+    position: absolute !important;
+    visibility: hidden !important;
     font-size: 0 !important;
     color: transparent !important;
+    overflow: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
 }
-/* Summary: flex row — label left, CSS chevron right */
+/* Summary must be position:relative so the absolute icon doesn't escape it */
 [data-testid="stExpander"] summary {
+    position: relative !important;
     display: flex !important;
     align-items: center !important;
     list-style: none !important;
@@ -107,10 +127,13 @@ st.markdown("""
     font-size: 0.95rem !important;
     font-weight: 600 !important;
 }
+/* Our own chevron via pseudo-element */
 [data-testid="stExpander"] summary::after {
     content: '';
     flex-shrink: 0;
-    width: 7px; height: 7px;
+    display: block;
+    width: 7px;
+    height: 7px;
     border-right: 2px solid var(--green);
     border-bottom: 2px solid var(--green);
     transform: rotate(45deg);
