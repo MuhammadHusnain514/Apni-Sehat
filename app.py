@@ -41,6 +41,8 @@ init_db()
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
+/* ── MUST load Material Icons so ligatures render as glyphs, not raw text ── */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 /* ═══ 0. Colour tokens ═══ */
@@ -60,78 +62,92 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1A. Sidebar collapse button ═══ */
-[data-testid="stSidebarCollapseButton"] { overflow: hidden !important; }
-[data-testid="stSidebarCollapseButton"] * { font-size: 0 !important; color: transparent !important; }
-[data-testid="stSidebarCollapseButton"] svg { width:22px!important; height:22px!important; color:var(--txt2)!important; display:block!important; }
-[data-testid="collapsedControl"] { overflow: hidden !important; }
-[data-testid="collapsedControl"] * { font-size: 0 !important; color: transparent !important; }
-[data-testid="collapsedControl"] svg { width:22px!important; height:22px!important; color:var(--txt2)!important; display:block!important; }
+/* ═══ 1. Sidebar collapse button ═══ */
+[data-testid="stSidebarCollapseButton"] { overflow:hidden !important; }
+[data-testid="stSidebarCollapseButton"] * { font-size:0 !important; color:transparent !important; }
+[data-testid="stSidebarCollapseButton"] svg { width:22px !important; height:22px !important; color:var(--txt2) !important; display:block !important; }
+[data-testid="collapsedControl"] { overflow:hidden !important; }
+[data-testid="collapsedControl"] * { font-size:0 !important; color:transparent !important; }
+[data-testid="collapsedControl"] svg { width:22px !important; height:22px !important; color:var(--txt2) !important; display:block !important; }
 
-/* ═══ 1B. Expander icon — COMPREHENSIVE FIX for _arrow_right bleed-through ═══ */
+/* ═══ 2. Expander arrow — THE REAL FIX ═══
+   Streamlit renders the arrow as a Material Icons ligature span.
+   When the font loads it's a glyph; when it doesn't it bleeds as "_arrow_right" text.
+   Strategy: load the font (above), then shrink the icon element to 0px and clip it.
+   We must NOT touch the <p> that contains the label text.
+*/
+/* Hide the named icon testid */
 [data-testid="stExpanderToggleIcon"] {
-    display: none !important;
+    font-size: 0 !important;
     width: 0 !important;
+    max-width: 0 !important;
     height: 0 !important;
     overflow: hidden !important;
-    position: absolute !important;
+    display: inline-block !important;
     visibility: hidden !important;
-    font-size: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
-/* Kill SVG chevrons inside expander summary */
-[data-testid="stExpander"] summary svg,
-details[data-testid] summary svg {
+/* Nuke the SVG arrow that Streamlit sometimes uses instead */
+[data-testid="stExpander"] details summary svg,
+[data-testid="stExpander"] summary svg {
     display: none !important;
 }
-/* Kill any Material Icon span that bleeds the ligature name as text */
-[data-testid="stExpander"] summary span[class*="css"],
-[data-testid="stExpander"] summary > div > div:first-child {
+/* The icon is the FIRST child div inside the summary wrapper — zero it out */
+[data-testid="stExpander"] summary > div > div:first-child,
+[data-testid="stExpander"] summary > div:first-child {
     font-size: 0 !important;
     width: 0 !important;
+    max-width: 0 !important;
     overflow: hidden !important;
+    flex: 0 0 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
-/* Always keep the label paragraph fully visible */
+/* Protect label paragraph — always visible */
 [data-testid="stExpander"] summary p,
-[data-testid="stExpander"] .streamlit-expanderHeader p,
-[data-testid="stExpander"] [data-testid="stExpanderHeader"] p {
-    color: var(--txt)   !important;
-    font-size: 0.95rem  !important;
-    font-weight: 600    !important;
-    display: block      !important;
+[data-testid="stExpander"] summary > div > div p,
+[data-testid="stExpander"] .streamlit-expanderHeader p {
+    color: var(--txt) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    display: block !important;
     visibility: visible !important;
-    opacity: 1          !important;
+    opacity: 1 !important;
+    width: auto !important;
+    max-width: 100% !important;
 }
 
-/* ═══ 2. Base ═══ */
-html, body { background: var(--bg) !important; font-family: 'Inter', sans-serif !important; }
+/* ═══ 3. Base ═══ */
+html, body { background:var(--bg) !important; font-family:'Inter',sans-serif !important; }
 .stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"],
-[data-testid="block-container"], div.block-container, .main { background: var(--bg) !important; }
+[data-testid="block-container"], div.block-container, .main { background:var(--bg) !important; }
 
-/* ═══ 3. Typography ═══ */
+/* ═══ 4. Typography ═══ */
 p, li, span, div, label, .stMarkdown p, .stMarkdown li {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 0.98rem !important;
-    line-height: 1.75  !important;
-    color: var(--txt)  !important;
+    font-family:'Inter',sans-serif !important;
+    font-size:0.98rem !important;
+    line-height:1.75 !important;
+    color:var(--txt) !important;
 }
 h1 { font-size:1.9rem !important; font-weight:800 !important; color:var(--green) !important; letter-spacing:-0.5px !important; }
 h2 { font-size:1.4rem !important; font-weight:700 !important; color:var(--green) !important; }
-h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)   !important; }
+h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt) !important; }
 [data-testid="stMarkdownContainer"] h1,
 [data-testid="stMarkdownContainer"] h2 { color:var(--green) !important; }
 .stCaption, [data-testid="stCaptionContainer"] p { font-size:0.82rem !important; color:var(--txt3) !important; }
 
-/* ═══ 4. Sidebar ═══ */
+/* ═══ 5. Sidebar ═══ */
 [data-testid="stSidebar"], [data-testid="stSidebar"] > div, [data-testid="stSidebarContent"] {
-    background: var(--bg2) !important;
-    border-right: 1px solid var(--border) !important;
+    background:var(--bg2) !important; border-right:1px solid var(--border) !important;
 }
 [data-testid="stSidebar"] * { color:var(--txt) !important; font-family:'Inter',sans-serif !important; }
 [data-testid="stSidebar"] h2 { color:var(--green) !important; font-size:1.1rem !important; font-weight:700 !important; }
 [data-testid="stSidebar"] .stCaption p { color:var(--txt3) !important; font-size:0.78rem !important; }
 [data-testid="stSidebar"] hr { border-color:var(--border) !important; margin:12px 0 !important; }
 
-/* ═══ 5. Buttons ═══ */
+/* ═══ 6. Buttons ═══ */
 .stButton > button[kind="primary"] {
     background:var(--green) !important; color:#0a1a0f !important; border:none !important;
     border-radius:10px !important; font-family:'Inter',sans-serif !important;
@@ -152,7 +168,7 @@ h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)  
 }
 .stButton > button:hover { background:#1E2D1E !important; border-color:var(--green) !important; }
 
-/* ═══ 6. Inputs ═══ */
+/* ═══ 7. Inputs ═══ */
 .stTextInput > div > div > input, .stNumberInput > div > div > input,
 .stTextArea textarea, [data-baseweb="input"] input, [data-baseweb="textarea"] textarea {
     background:var(--bg3) !important; color:var(--txt) !important;
@@ -171,7 +187,7 @@ h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)  
     letter-spacing:0.04em !important; text-transform:uppercase !important;
 }
 
-/* ═══ 7. Selectbox ═══ */
+/* ═══ 8. Selectbox ═══ */
 [data-baseweb="select"] > div {
     background:var(--bg3) !important; color:var(--txt) !important;
     border:1px solid var(--border) !important; border-radius:8px !important;
@@ -183,7 +199,7 @@ h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)  
 [data-baseweb="menu"] li { color:var(--txt) !important; font-size:0.95rem !important; }
 [data-baseweb="menu"] li:hover { background:#1E2D1E !important; }
 
-/* ═══ 8. Checkboxes / Radio / Toggle ═══ */
+/* ═══ 9. Checkboxes / Radio / Toggle ═══ */
 .stCheckbox label, .stCheckbox span, [data-testid="stCheckbox"] label {
     color:var(--txt) !important; font-size:0.95rem !important;
     font-weight:400 !important; text-transform:none !important;
@@ -191,13 +207,13 @@ h3 { font-size:1.1rem !important; font-weight:700 !important; color:var(--txt)  
 .stRadio label, .stRadio div[role="radiogroup"] label { color:var(--txt) !important; font-size:0.95rem !important; }
 .stToggle label p { color:var(--txt) !important; font-size:0.95rem !important; }
 
-/* ═══ 9. Date / Time ═══ */
+/* ═══ 10. Date / Time ═══ */
 input[type="date"], input[type="time"] {
     background:var(--bg3) !important; color:var(--txt) !important;
     border:1px solid var(--border) !important; border-radius:8px !important;
 }
 
-/* ═══ 10. Tabs ═══ */
+/* ═══ 11. Tabs ═══ */
 .stTabs [data-baseweb="tab-list"] {
     background:var(--bg2) !important; border-bottom:1px solid var(--border) !important; gap:2px !important;
 }
@@ -212,18 +228,16 @@ input[type="date"], input[type="time"] {
 }
 .stTabs [data-baseweb="tab-panel"] { background:var(--bg) !important; padding-top:20px !important; }
 
-/* ═══ 11. Expanders ═══ */
+/* ═══ 12. Expander container styling ═══ */
 [data-testid="stExpander"] {
     background:var(--bg2) !important; border:1px solid var(--border) !important;
     border-radius:10px !important; overflow:hidden !important;
 }
-[data-testid="stExpander"] summary p, .streamlit-expanderHeader p {
-    color:var(--txt) !important; font-weight:600 !important; font-size:0.93rem !important; margin:0 !important;
-}
+[data-testid="stExpander"] summary { padding:12px 16px !important; }
 [data-testid="stExpander"] summary:hover { background:#1a2030 !important; }
 [data-testid="stExpander"] > div > div { background:var(--bg2) !important; padding:12px 16px !important; }
 
-/* ═══ 12. Metrics ═══ */
+/* ═══ 13. Metrics ═══ */
 [data-testid="stMetric"] {
     background:var(--bg2) !important; border:1px solid var(--border) !important;
     border-radius:12px !important; padding:14px 18px !important;
@@ -232,7 +246,7 @@ input[type="date"], input[type="time"] {
 [data-testid="stMetricLabel"] { color:var(--txt2) !important; font-size:0.8rem !important; font-weight:600 !important; text-transform:uppercase !important; letter-spacing:0.05em !important; }
 [data-testid="stMetricDelta"]  { color:var(--txt3) !important; }
 
-/* ═══ 13. Alerts ═══ */
+/* ═══ 14. Alerts ═══ */
 div[data-testid="stSuccess"] { background:#052e16 !important; border-left:4px solid var(--green) !important; border-radius:8px !important; }
 div[data-testid="stSuccess"] * { color:#86EFAC !important; }
 div[data-testid="stInfo"]    { background:#0c1a3a !important; border-left:4px solid #3B82F6 !important; border-radius:8px !important; }
@@ -242,7 +256,7 @@ div[data-testid="stWarning"] * { color:#FCD34D !important; }
 div[data-testid="stError"]   { background:#1a0505 !important; border-left:4px solid var(--red) !important; border-radius:8px !important; }
 div[data-testid="stError"]   * { color:#FCA5A5 !important; }
 
-/* ═══ 14. Misc ═══ */
+/* ═══ 15. Misc ═══ */
 hr { border-color:var(--border) !important; margin:16px 0 !important; }
 [data-testid="stDataFrame"], [data-testid="stDataFrame"] th, [data-testid="stDataFrame"] td {
     background:var(--bg2) !important; color:var(--txt) !important;
@@ -256,40 +270,27 @@ hr { border-color:var(--border) !important; margin:16px 0 !important; }
    ════════════════════════════════════════ */
 
 /* ── BIG Login Hero ── */
-.login-hero {
-    text-align: center;
-    padding: 48px 20px 32px;
-    margin-bottom: 4px;
-}
+.login-hero { text-align:center; padding:48px 20px 32px; margin-bottom:4px; }
 .login-hero-logo {
-    font-family: 'Inter', sans-serif !important;
-    font-size: 4.2rem !important;
-    font-weight: 900 !important;
-    color: var(--green) !important;
-    letter-spacing: -2px !important;
-    line-height: 1.05 !important;
-    display: block !important;
-    text-shadow: 0 0 40px rgba(34,197,94,0.25);
+    font-family:'Inter',sans-serif !important;
+    font-size:4.2rem !important; font-weight:900 !important;
+    color:var(--green) !important; letter-spacing:-2px !important;
+    line-height:1.05 !important; display:block !important;
+    text-shadow:0 0 40px rgba(34,197,94,0.25);
 }
 .login-hero-urdu {
-    font-size: 2.1rem !important;
-    color: var(--green-hi) !important;
-    font-weight: 700 !important;
-    display: block !important;
-    margin-top: 4px !important;
-    letter-spacing: 0 !important;
+    font-size:2.1rem !important; color:var(--green-hi) !important;
+    font-weight:700 !important; display:block !important;
+    margin-top:4px !important; letter-spacing:0 !important;
 }
 .login-hero-sub {
-    font-size: 1.08rem !important;
-    color: var(--txt2) !important;
-    margin-top: 12px !important;
-    display: block !important;
-    font-weight: 400 !important;
+    font-size:1.08rem !important; color:var(--txt2) !important;
+    margin-top:12px !important; display:block !important; font-weight:400 !important;
 }
 
 /* ── Tip banner ── */
 .tip-banner {
-    background: linear-gradient(135deg,#052e16,#0f3d1c);
+    background:linear-gradient(135deg,#052e16,#0f3d1c);
     border:1px solid #16A34A; border-radius:14px;
     padding:18px 22px; margin-bottom:20px;
     font-size:0.96rem; line-height:1.75;
@@ -377,22 +378,35 @@ hr { border-color:var(--border) !important; margin:16px 0 !important; }
 
 <script>
 (function(){
-    function fixIcons(){
-        /* Aggressively hide expander toggle icons and any bleeding ligature text */
-        document.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(el=>{
-            el.style.cssText='display:none!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;visibility:hidden!important;font-size:0!important;';
+    function fixExpanders(){
+        // Find every expander summary and nuke the icon node (first child of the flex row)
+        document.querySelectorAll('[data-testid="stExpander"] summary').forEach(function(summary){
+            // Hide any SVG arrows
+            summary.querySelectorAll('svg').forEach(function(svg){
+                svg.style.cssText = 'display:none!important;';
+            });
+            // Find the toggle icon by testid
+            summary.querySelectorAll('[data-testid="stExpanderToggleIcon"]').forEach(function(el){
+                el.style.cssText = 'font-size:0!important;width:0!important;max-width:0!important;height:0!important;overflow:hidden!important;visibility:hidden!important;padding:0!important;margin:0!important;flex:0 0 0!important;min-width:0!important;display:inline-block!important;';
+            });
+            // Also zero-out any span that holds the Material Icons ligature text directly
+            summary.querySelectorAll('span').forEach(function(span){
+                // Only target spans that are NOT inside a <p> (those are labels)
+                if(!span.closest('p') && (span.className||'').includes('material')){
+                    span.style.cssText = 'font-size:0!important;width:0!important;overflow:hidden!important;';
+                }
+            });
         });
-        /* Also hide SVG arrows inside expander summaries */
-        document.querySelectorAll('[data-testid="stExpander"] summary svg').forEach(el=>{
-            el.style.cssText='display:none!important;';
-        });
-        /* Sidebar collapse: strip bare text nodes, keep SVG */
-        document.querySelectorAll('[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]').forEach(el=>{
-            el.childNodes.forEach(n=>{ if(n.nodeType===3) n.textContent=''; });
+
+        // Sidebar collapse button — strip bare text nodes, preserve SVG
+        document.querySelectorAll('[data-testid="stSidebarCollapseButton"],[data-testid="collapsedControl"]').forEach(function(el){
+            el.childNodes.forEach(function(n){ if(n.nodeType===3) n.textContent=''; });
         });
     }
-    fixIcons();
-    new MutationObserver(fixIcons).observe(document.body,{childList:true,subtree:true});
+
+    // Run immediately and watch for DOM changes (Streamlit re-renders on interaction)
+    fixExpanders();
+    new MutationObserver(fixExpanders).observe(document.body, {childList:true, subtree:true});
 })();
 </script>
 """, unsafe_allow_html=True)
@@ -534,11 +548,9 @@ _sidebar()
 #  ENTRY SCREEN
 # ══════════════════════════════════════════════════════════════════════════════
 if "user_key" not in ss:
-    # Language toggle top-right
     h1, h2 = st.columns([5, 1])
     with h2: _lang_toggle("entry")
 
-    # ── BIG HERO LOGO — always prominent ──
     lang = _lang()
     st.markdown(
         f'<div class="login-hero">'
@@ -548,11 +560,9 @@ if "user_key" not in ss:
         f'</div>',
         unsafe_allow_html=True,
     )
-
     st.divider()
 
     left, right = st.columns([1, 1], gap="large")
-
     with left:
         st.markdown(f'<div class="section-label">{"Your details" if lang=="en" else "آپ کی تفصیلات"}</div>', unsafe_allow_html=True)
         name  = st.text_input(t("entry_name"),  placeholder=t("entry_name_hint"), label_visibility="collapsed")
@@ -561,17 +571,14 @@ if "user_key" not in ss:
         st.caption(t("entry_phone_hint"))
         st.caption(t("entry_privacy"))
         st.markdown('<div style="height:10px"></div>', unsafe_allow_html=True)
-
         go_col, _ = st.columns([1, 2])
         with go_col:
             go = st.button(t("entry_btn"), type="primary", use_container_width=True)
 
         if go:
             pn = normalize_phone(phone)
-            if not name.strip():
-                st.error(t("name_error")); st.stop()
-            if not pn.startswith("+") or len(pn) < 8:
-                st.error(t("phone_error")); st.stop()
+            if not name.strip(): st.error(t("name_error")); st.stop()
+            if not pn.startswith("+") or len(pn) < 8: st.error(t("phone_error")); st.stop()
 
             with st.spinner(t("finding_plan")):
                 uk = user_key_from_phone(pn)
@@ -597,20 +604,17 @@ if "user_key" not in ss:
                         "profile_complete": True, "setup_step": "done",
                         "on_insulin": False, "hypo_episodes": False, "weakness_between": False,
                     })
-
-                    # FIX 1: safe BMI — `or 0` converts NULL from DB to 0
+                    # Safe BMI — `or 0` converts NULL from DB to 0
                     h = prof.get("height_cm") or 0
                     w = prof.get("weight_kg") or 0
                     if h > 0 and w > 0:
                         ss["bmi"] = w / ((h / 100) ** 2)
-
-                    # FIX 2: run triage for returning users → sidebar badge will show
+                    # Run triage so sidebar badge shows for returning users
                     _run_triage(
                         ss.get("diabetes_type", "Type 2"),
                         ss.get("has_hypertension", False),
                         ss.get("has_high_cholesterol", False),
                     )
-
                     st.success(f"{t('welcome_back')}, {ss['name']}! 👋")
                 else:
                     upsert_profile(uk, {"full_name": name.strip(), "phone_last4": last4(pn), "family_history": []})
@@ -621,12 +625,12 @@ if "user_key" not in ss:
 
     with right:
         feats = [
-            ("✅", "Bilingual health chatbot — English & Urdu" if lang=="en" else "اردو اور انگریزی میں صحت کا مددگار"),
-            ("🥗", "Personalised 7-day desi meal plan"         if lang=="en" else "ذاتی 7 دن کا دیسی کھانے کا منصوبہ"),
-            ("📊", "Blood sugar tracker with trend chart"       if lang=="en" else "بلڈ شوگر ٹریکر"),
-            ("💡", "AI food swap suggestions"                   if lang=="en" else "AI سے کھانے کی تجاویز"),
+            ("✅","Bilingual health chatbot — English & Urdu" if lang=="en" else "اردو اور انگریزی میں صحت کا مددگار"),
+            ("🥗","Personalised 7-day desi meal plan"         if lang=="en" else "ذاتی 7 دن کا دیسی کھانے کا منصوبہ"),
+            ("📊","Blood sugar tracker with trend chart"       if lang=="en" else "بلڈ شوگر ٹریکر"),
+            ("💡","AI food swap suggestions"                   if lang=="en" else "AI سے کھانے کی تجاویز"),
         ]
-        rows = "".join(f'<p><span style="margin-right:10px;">{i}</span>{txt}</p>' for i, txt in feats)
+        rows = "".join(f'<p><span style="margin-right:10px;">{i}</span>{txt}</p>' for i,txt in feats)
         disc = ("This app supports healthy habits — it does <strong>not</strong> replace your doctor."
                 if lang=="en" else
                 "یہ ایپ صحت مند عادات میں مدد کرتی ہے — آپ کے <strong>ڈاکٹر کی جگہ نہیں لیتی</strong>۔")
@@ -747,7 +751,6 @@ tabs = st.tabs([t("tab_plan"), t("tab_chat"), t("tab_glucose"), t("tab_dashboard
 #  TAB 0 — MY PLAN
 # ══════════════════════════════════════════════════════════════════════════════
 with tabs[0]:
-
     lv       = _triage_level()
     bcls     = {"GREEN":"badge-g","AMBER":"badge-a","RED":"badge-r"}.get(lv or "","badge-n")
     blbl     = {"GREEN":t("status_green"),"AMBER":t("status_amber"),"RED":t("status_red")}.get(lv or "",t("status_none"))
@@ -771,7 +774,6 @@ with tabs[0]:
         if st.button(t("edit_profile_btn"), use_container_width=True):
             ss["editing_profile"] = not ss.get("editing_profile",False); st.rerun()
 
-    # Profile edit
     if ss.get("editing_profile"):
         with st.expander("Edit Profile" if _lang()=="en" else "پروفائل تبدیل کریں", expanded=True):
             ef1, ef2 = st.columns(2)
@@ -859,7 +861,6 @@ with tabs[0]:
 
     st.divider()
 
-    # Tip banner
     tc, tb = st.columns([5,1])
     with tc:
         st.markdown(
@@ -870,7 +871,6 @@ with tabs[0]:
         if st.button(t("tip_new"), use_container_width=True, key="new_tip"):
             ss["current_tip"] = get_tip(_lang()); st.rerun()
 
-    # Meal structure info
     pp = _plan_profile()
     if pp:
         lg = _lang()
@@ -881,7 +881,6 @@ with tabs[0]:
     if ss.get("on_insulin"):    st.warning(t("insulin_reminder"))
     if ss.get("hypo_episodes"): st.warning(t("hypo_reminder"))
 
-    # 7-Day Plan
     st.markdown(f"## 🥗 {t('plan_heading')}")
     if _blocked():
         st.error(t("plan_blocked"))
@@ -932,7 +931,6 @@ with tabs[0]:
 
     st.divider()
 
-    # Check-in
     st.markdown(f"### {t('checkin_heading')}")
     user = _get_user()
     if not _blocked():
