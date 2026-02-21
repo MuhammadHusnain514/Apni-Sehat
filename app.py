@@ -744,7 +744,7 @@ if not ss.get("week_plan"):
 # Late CSS injection — appears after Streamlit's own styles in DOM, guaranteed to win
 st.markdown("""
 <style>
-/* Late override — wins specificity race against Streamlit defaults */
+/* Late override — CSS layer */
 html body .material-symbols-rounded,
 html body span.material-symbols-rounded,
 button span.material-symbols-rounded {
@@ -770,7 +770,7 @@ button span.material-symbols-rounded {
     position: absolute !important;
     color: transparent !important;
 }
-/* Day accordion full-width header button — left-aligned with subtle styling */
+/* Day accordion full-width header button */
 .day-acc-row .stButton > button {
     width: 100% !important;
     text-align: left !important;
@@ -791,6 +791,33 @@ button span.material-symbols-rounded {
     color: var(--txt) !important;
 }
 </style>
+<script>
+// JS is the only reliable way to kill Material Icons ligature text in sidebar buttons.
+// CSS font-size:0 loses when Streamlit sets inline styles; JS wins unconditionally.
+(function hideMaterialIcons() {
+    function kill() {
+        document.querySelectorAll(
+            '.material-symbols-rounded, [data-testid="stExpanderToggleIcon"]'
+        ).forEach(function(el) {
+            el.style.setProperty('font-size',   '0',       'important');
+            el.style.setProperty('width',       '0',       'important');
+            el.style.setProperty('max-width',   '0',       'important');
+            el.style.setProperty('height',      '0',       'important');
+            el.style.setProperty('overflow',    'hidden',  'important');
+            el.style.setProperty('opacity',     '0',       'important');
+            el.style.setProperty('visibility',  'hidden',  'important');
+            el.style.setProperty('color',       'transparent', 'important');
+            el.style.setProperty('padding',     '0',       'important');
+            el.style.setProperty('margin',      '0',       'important');
+            el.style.setProperty('line-height', '0',       'important');
+        });
+    }
+    kill();
+    // Watch for Streamlit dynamically inserting new elements (sidebar toggle, etc.)
+    var obs = new MutationObserver(kill);
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 """, unsafe_allow_html=True)
 
 tabs = st.tabs([t("tab_plan"), t("tab_chat"), t("tab_glucose"), t("tab_dashboard")])
@@ -968,17 +995,26 @@ with tabs[0]:
                          if _lang()=="en" else
                          f"دن {day_num}  ·  ~{day_carbs:.0f}g {t('carbs_label')}")
 
-            # ── FIX: single full-width button (no column split → no icon overflow) ──
+            # ── Single full-width button accordion ──────────────────────────────────
+            # on_click callback updates state BEFORE the natural Streamlit rerun.
+            # No explicit st.rerun() needed — avoids the double-rerender that made
+            # the accordion feel slow.
             arrow = "▲" if is_open else "▽"
             btn_label = f"📅  {day_label}    {arrow}"
-            # Wrap in a div so our CSS class targets only these buttons
-            st.markdown('<div class="day-acc-row">', unsafe_allow_html=True)
-            if st.button(btn_label, key=f"day_tog_{day_num}", use_container_width=True):
-                if is_open:
-                    ss["open_days"].discard(day_num)
+
+            def _toggle_day(dn=day_num):
+                if dn in ss["open_days"]:
+                    ss["open_days"].discard(dn)
                 else:
-                    ss["open_days"].add(day_num)
-                st.rerun()
+                    ss["open_days"].add(dn)
+
+            st.markdown('<div class="day-acc-row">', unsafe_allow_html=True)
+            st.button(
+                btn_label,
+                key=f"day_tog_{day_num}",
+                use_container_width=True,
+                on_click=_toggle_day,
+            )
             st.markdown('</div>', unsafe_allow_html=True)
 
             # Content — only shown when open
