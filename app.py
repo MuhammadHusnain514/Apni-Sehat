@@ -41,7 +41,8 @@ init_db()
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-/* ── MUST load Material Icons so ligatures render as glyphs, not raw text ── */
+/* ── Load both standard and newer Material Symbol fonts to prevent text fallback ── */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -62,42 +63,77 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1. Sidebar collapse button — TRANSPARENT TEXT FIX ═══ */
-/* Make any stray text inside the button invisible */
+/* ═══ 1. Sidebar collapse button — FLEXBOX FIX ═══ */
+/* Nuke Streamlit's inner text/SVGs completely */
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] * {
+    display: none !important;
+}
+/* Turn the button into a clean, centered flex container */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {
-    color: transparent !important; 
+    color: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-/* Ensure the native SVG icon remains fully visible */
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="collapsedControl"] svg {
-    color: var(--txt2) !important; 
-    fill: currentColor !important;
-    visibility: visible !important;
+/* Draw CSS left arrow */
+[data-testid="stSidebarCollapseButton"]::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-left: 2px solid var(--txt2);
+    border-bottom: 2px solid var(--txt2);
+    transform: rotate(45deg);
+    display: block !important;
+}
+/* Draw CSS right arrow */
+[data-testid="collapsedControl"]::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--txt2);
+    border-bottom: 2px solid var(--txt2);
+    transform: rotate(-45deg);
     display: block !important;
 }
 
-/* ═══ 2. Expander arrow — TRANSPARENT TEXT FIX ═══ */
-/* Make stray text in the summary root invisible */
-[data-testid="stExpander"] summary {
-    color: transparent !important; 
-}
-/* Make stray text inside the icon wrapper invisible */
+/* ═══ 2. Expander arrow — FLEXBOX FIX ═══ */
+/* Completely delete Streamlit's buggy icon container from the DOM layout */
 [data-testid="stExpanderToggleIcon"] {
-    color: transparent !important; 
+    display: none !important;
 }
-/* Ensure the native SVG expander arrow remains visible */
-[data-testid="stExpanderToggleIcon"] svg {
-    color: var(--txt2) !important; 
-    fill: currentColor !important;
-    visibility: visible !important;
+/* Force the summary row to be a proper flex container */
+[data-testid="stExpander"] summary {
+    display: flex !important;
+    align-items: center !important;
+    list-style: none !important; 
+}
+[data-testid="stExpander"] summary::-webkit-details-marker {
+    display: none !important;
+}
+/* Draw CSS down arrow and push it all the way to the right side natively */
+[data-testid="stExpander"] summary::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--green);
+    border-bottom: 2px solid var(--green);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+    margin-left: auto !important; /* This flex property guarantees it stays on the far right */
     display: block !important;
+    flex-shrink: 0 !important;
 }
-/* Ensure your actual label (e.g., "Day 1", "Edit Profile") stays perfectly visible */
+/* Rotate arrow up when open */
+[data-testid="stExpander"] details[open] summary::after {
+    transform: rotate(-135deg);
+    margin-top: 4px;
+}
+/* Ensure the text label renders correctly */
 [data-testid="stExpander"] summary p {
+    margin: 0 !important;
+    padding-right: 12px !important;
     color: var(--txt) !important;
-    visibility: visible !important;
-    display: block !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
 }
 
 /* ═══ 3. Base ═══ */
