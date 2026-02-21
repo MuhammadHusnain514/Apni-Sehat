@@ -62,58 +62,42 @@ st.markdown("""
     color-scheme: dark;
 }
 
-/* ═══ 1. Sidebar collapse button — PRESERVE LAYOUT FIX ═══ */
+/* ═══ 1. Sidebar collapse button — TRANSPARENT TEXT FIX ═══ */
+/* Make any stray text inside the button invisible */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {
-    visibility: hidden !important; /* Hides raw text/icons but keeps the space */
-    position: relative !important;
+    color: transparent !important; 
 }
-/* Draw Close arrow (points left) */
-[data-testid="stSidebarCollapseButton"]::after {
-    content: '' !important;
-    visibility: visible !important; /* Bring arrow back to visibility */
-    position: absolute !important;
-    top: 50% !important; left: 50% !important;
-    width: 10px !important; height: 10px !important;
-    border-left: 2px solid var(--txt2) !important;
-    border-bottom: 2px solid var(--txt2) !important;
-    transform: translate(-30%, -50%) rotate(45deg) !important;
-}
-/* Draw Open arrow (points right) */
-[data-testid="collapsedControl"]::after {
-    content: '' !important;
+/* Ensure the native SVG icon remains fully visible */
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="collapsedControl"] svg {
+    color: var(--txt2) !important; 
+    fill: currentColor !important;
     visibility: visible !important;
-    position: absolute !important;
-    top: 50% !important; left: 50% !important;
-    width: 10px !important; height: 10px !important;
-    border-right: 2px solid var(--txt2) !important;
-    border-bottom: 2px solid var(--txt2) !important;
-    transform: translate(-70%, -50%) rotate(-45deg) !important;
+    display: block !important;
 }
 
-/* ═══ 2. Expander arrow — PRESERVE LAYOUT FIX ═══ */
-/* Hide the icon container's contents but KEEP its dimensions */
+/* ═══ 2. Expander arrow — TRANSPARENT TEXT FIX ═══ */
+/* Make stray text in the summary root invisible */
+[data-testid="stExpander"] summary {
+    color: transparent !important; 
+}
+/* Make stray text inside the icon wrapper invisible */
 [data-testid="stExpanderToggleIcon"] {
-    visibility: hidden !important; 
-    position: relative !important;
-    width: 24px !important; 
-    height: 24px !important;
+    color: transparent !important; 
 }
-/* Draw Expander arrow (points down) inside the invisible container */
-[data-testid="stExpanderToggleIcon"]::after {
-    content: '' !important;
+/* Ensure the native SVG expander arrow remains visible */
+[data-testid="stExpanderToggleIcon"] svg {
+    color: var(--txt2) !important; 
+    fill: currentColor !important;
     visibility: visible !important;
-    position: absolute !important;
-    top: 50% !important; left: 50% !important;
-    width: 8px !important; height: 8px !important;
-    border-right: 2px solid var(--txt2) !important;
-    border-bottom: 2px solid var(--txt2) !important;
-    transform: translate(-50%, -70%) rotate(45deg) !important;
-    transition: transform 0.2s ease !important;
+    display: block !important;
 }
-/* Rotate the Expander arrow when opened (points up) */
-[data-testid="stExpander"] details[open] [data-testid="stExpanderToggleIcon"]::after {
-    transform: translate(-50%, -30%) rotate(-135deg) !important;
+/* Ensure your actual label (e.g., "Day 1", "Edit Profile") stays perfectly visible */
+[data-testid="stExpander"] summary p {
+    color: var(--txt) !important;
+    visibility: visible !important;
+    display: block !important;
 }
 
 /* ═══ 3. Base ═══ */
